@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  appName: 'substrate-front-end-tutorial',
+  developmentKeyring: true,
+  production: false,
+  providerSocket: 'ws://127.0.0.1:9944',
+  rpc: {}
 };
 
 /*
