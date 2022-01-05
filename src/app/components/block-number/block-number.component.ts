@@ -15,7 +15,8 @@ import { SubstrateService } from 'src/app/services/substrate.service';
         <mat-icon aria-hidden="false" aria-label="Timer icon">watch_later</mat-icon>
         {{blockNumberTimer}}
       </mat-card-footer>
-    </mat-card>`,
+    </mat-card>
+    `,
   styleUrls: ['./block-number.component.sass']
 })
 export class BlockNumberComponent implements OnInit {

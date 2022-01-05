@@ -6,11 +6,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BlockNumberComponent } from './components/block-number/block-number.component';
 import { SharedModule } from './shared/shared.module';
+import { NodeInfoComponent } from './components/node-info/node-info.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BlockNumberComponent
+    BlockNumberComponent,
+    NodeInfoComponent
   ],
   imports: [
     AppRoutingModule,
