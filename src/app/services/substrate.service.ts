@@ -8,6 +8,7 @@ import { keyring } from '@polkadot/ui-keyring';
 
 import { SubstrateState } from '../contracts/substrate-state';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,10 @@ import { environment } from 'src/environments/environment';
 export class SubstrateService {
 
   private loadAccts = false;
-  
-  private state: SubstrateState = {
+
+  // todo public state obviously not a good idea, but
+  // proof of concept
+  public state = new BehaviorSubject<SubstrateState>({
     socket: environment.providerSocket,
     jsonrpc: { ...jsonrpc, ...environment.rpc },
     keyring: null,
@@ -24,38 +27,38 @@ export class SubstrateService {
     api: null,
     apiError: null,
     apiState: null
-  };
+  });
 
   public connectToNode() {
-    const { apiState, socket, jsonrpc } = this.state;
+    const { apiState, socket, jsonrpc } = this.state.value;
 
     // We only want this function to be performed once
     if (apiState) {
       return;
     }
 
-    this.state = this.reducer(this.state, { type: 'CONNECT_INIT' });
+    this.updateState({ type: 'CONNECT_INIT' });
 
     const provider = new WsProvider(socket);
     const _api = new ApiPromise({ provider, rpc: jsonrpc });
 
     // Set listeners for disconnection and reconnection event.
     _api.on('connected', () => {
-      this.state = this.reducer(this.state, { type: 'CONNECT', payload: _api });
+      this.updateState({ type: 'CONNECT', payload: _api });
 
       // `ready` event is not emitted upon reconnection and is checked explicitly here.
       _api.isReady.then((_api) => {
-        this.reducer(this.state, { type: 'CONNECT_SUCCESS' });
+        this.updateState({ type: 'CONNECT_SUCCESS' });
       });
     });
 
-    _api.on('ready', () => this.reducer(this.state, { type: 'CONNECT_SUCCESS' }));
-    _api.on('error', err => this.reducer(this.state, { type: 'CONNECT_ERROR', payload: err }));
+    _api.on('ready', () => this.updateState({ type: 'CONNECT_SUCCESS' }));
+    _api.on('error', err => this.updateState({ type: 'CONNECT_ERROR', payload: err }));
   }
 
   public loadAccounts() {
     const asyncLoadAccounts = async () => {
-      this.reducer(this.state, { type: 'LOAD_KEYRING' });
+      this.updateState({ type: 'LOAD_KEYRING' });
 
       try {
         await web3Enable(environment.appName);
@@ -64,14 +67,14 @@ export class SubstrateService {
           ({ address, meta: { ...meta, name: `${meta.name} (${meta.source})` } }));
         keyring.loadAll({ isDevelopment: environment.developmentKeyring }, allAccounts);
 
-        this.reducer(this.state, { type: 'SET_KEYRING', payload: keyring });
+        this.updateState({ type: 'SET_KEYRING', payload: keyring });
       } catch (e) {
         console.error(e);
-        this.reducer(this.state, { type: 'KEYRING_ERROR' });
+        this.updateState({ type: 'KEYRING_ERROR' });
       }
     };
 
-    const { keyringState } = this.state;
+    const { keyringState } = this.state.value;
     // If `keyringState` is not null `asyncLoadAccounts` is running.
     if (keyringState) {
       return;
@@ -79,7 +82,7 @@ export class SubstrateService {
 
     // If `loadAccts` is true, the `asyncLoadAccounts` has been run once.
     if (this.loadAccts) {
-      this.reducer(this.state, { type: 'SET_KEYRING', payload: keyring });
+      this.updateState({ type: 'SET_KEYRING', payload: keyring });
     }
 
     // This is the heavy duty work
@@ -87,7 +90,12 @@ export class SubstrateService {
     asyncLoadAccounts();
   }
 
-  private reducer(state: any, action: any) {
+  private updateState(action: any) {
+    const newState = this.reducer(this.state.value, action);
+    this.state.next(newState);
+  }
+
+  private reducer(state: SubstrateState, action: any) {
     console.log('-------------------------');
     console.log('reducer state:');
     console.log(state);
