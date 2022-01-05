@@ -1,4 +1,11 @@
-<router-outlet></router-outlet>
-
-<!-- todo should use router, should use feature module -->
-<app-block-number></app-block-number>
+<!-- <router-outlet></router-outlet> -->
+<mat-grid-list cols="4">
+    <mat-grid-tile></mat-grid-tile>
+    <mat-grid-tile></mat-grid-tile>
+    <mat-grid-tile>
+        <app-block-number></app-block-number>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <app-block-number [finalized]="true"></app-block-number>
+    </mat-grid-tile>
+</mat-grid-list>

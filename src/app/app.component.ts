@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
-    // route guard before gettin other components?
+    // TODO route guard before gettin other components?
     this.substrateService.connectToNode();
     this.substrateService.loadAccounts();
   }

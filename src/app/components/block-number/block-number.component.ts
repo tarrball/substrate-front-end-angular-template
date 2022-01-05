@@ -5,13 +5,17 @@ import { SubstrateService } from 'src/app/services/substrate.service';
 
 @Component({
   selector: 'app-block-number',
-  templateUrl: './block-number.component.html',
+  template: `
+    <mat-card>
+      <mat-card-content>{{blockNumber}}</mat-card-content>
+      <mat-card-content>{{finalized ? 'finalized' : 'current'}} block</mat-card-content>
+      <mat-card-footer>{{blockNumberTimer}}</mat-card-footer>
+    </mat-card>`,
   styleUrls: ['./block-number.component.sass']
 })
 export class BlockNumberComponent implements OnInit {
 
-  // TODO finalized input (for two diff block components)
-  // @Input()
+  @Input() finalized: boolean = false;
 
   public blockNumber: number = 0;
 
@@ -22,11 +26,12 @@ export class BlockNumberComponent implements OnInit {
   constructor(private substrateService: SubstrateService) { }
 
   public ngOnInit(): void {
+    // TODO clean up
     this.substrateService.state.subscribe((state) => {
       if (state.apiState === 'READY') {
         const { api } = state;
 
-        const bestNumber: any = true /* finalized */
+        const bestNumber: any = this.finalized
           ? api.derive.chain.bestNumberFinalized
           : api.derive.chain.bestNumber;
 
@@ -42,7 +47,9 @@ export class BlockNumberComponent implements OnInit {
 
   private startNewTimer() {
     this.resetTimer();
-    this.timerSubscription = interval(1000).subscribe((seconds) => this.blockNumberTimer = seconds);
+
+    this.timerSubscription = interval(1000)
+      .subscribe((seconds) => this.blockNumberTimer = seconds);
   }
 
   private resetTimer() {
