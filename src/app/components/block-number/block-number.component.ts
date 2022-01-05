@@ -11,6 +11,7 @@ import { SubstrateService } from 'src/app/services/substrate.service';
         <label class="block-number">{{blockNumber}}</label>
         <label>{{finalized ? 'finalized' : 'current'}} block</label>
       </mat-card-content>
+      <mat-divider></mat-divider>
       <mat-card-footer>
         <mat-icon aria-hidden="false" aria-label="Timer icon">watch_later</mat-icon>
         {{blockNumberTimer}}

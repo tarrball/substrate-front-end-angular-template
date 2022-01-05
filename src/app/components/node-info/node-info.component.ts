@@ -11,6 +11,7 @@ import { SubstrateService } from 'src/app/services/substrate.service';
         <label>{{chain}}</label>
         <label>{{socket}}</label>
       </mat-card-content>
+      <mat-divider></mat-divider>
       <mat-card-footer>
         <mat-icon aria-hidden="false" aria-label="Gear icon">gear</mat-icon>
         {{nodeVersion}}
