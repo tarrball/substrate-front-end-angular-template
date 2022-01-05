@@ -1,11 +1,12 @@
 <!-- <router-outlet></router-outlet> -->
-<mat-grid-list cols="4">
-    <mat-grid-tile></mat-grid-tile>
-    <mat-grid-tile></mat-grid-tile>
-    <mat-grid-tile>
-        <app-block-number></app-block-number>
-    </mat-grid-tile>
-    <mat-grid-tile>
-        <app-block-number [finalized]="true"></app-block-number>
-    </mat-grid-tile>
-</mat-grid-list>
+<style>
+    .block-header-grid {
+        display: flex;
+    }
+</style>
+<div class="block-header-grid">
+    <div></div>
+    <div></div>
+    <app-block-number></app-block-number>
+    <app-block-number [finalized]="true"></app-block-number>
+</div>

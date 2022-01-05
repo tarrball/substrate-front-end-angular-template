@@ -7,9 +7,14 @@ import { SubstrateService } from 'src/app/services/substrate.service';
   selector: 'app-block-number',
   template: `
     <mat-card>
-      <mat-card-content>{{blockNumber}}</mat-card-content>
-      <mat-card-content>{{finalized ? 'finalized' : 'current'}} block</mat-card-content>
-      <mat-card-footer>{{blockNumberTimer}}</mat-card-footer>
+      <mat-card-content>
+        <label class="block-number">{{blockNumber}}</label>
+        <label>{{finalized ? 'finalized' : 'current'}} block</label>
+      </mat-card-content>
+      <mat-card-footer>
+        <mat-icon aria-hidden="false" aria-label="Timer icon">watch_later</mat-icon>
+        {{blockNumberTimer}}
+      </mat-card-footer>
     </mat-card>`,
   styleUrls: ['./block-number.component.sass']
 })

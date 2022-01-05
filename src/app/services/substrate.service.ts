@@ -105,7 +105,7 @@ export class SubstrateService {
     console.log(action);
     console.log('-------------------------');
 
-
+    // TODO use enum
     switch (action.type) {
       case 'CONNECT_INIT':
         return { ...state, apiState: 'CONNECT_INIT' };

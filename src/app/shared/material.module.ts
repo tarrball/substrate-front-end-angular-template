@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatCardModule } from '@angular/material/card';
-import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [],
@@ -11,7 +11,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
   ],
   exports: [
     MatCardModule,
-    MatGridListModule
+    MatIconModule
   ]
 })
 export class MaterialModule { }
