@@ -12,9 +12,11 @@
 
 <ng-template #metadataDialog>
     <h1 mat-dialog-title>Runtime Metadata</h1>
+    <mat-divider></mat-divider>
     <div mat-dialog-content>
-        <pre>
-            <code>{{metadata}}</code>
-        </pre>
+        <pre><code>{{metadata}}</code></pre>
     </div>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+      </mat-dialog-actions>
 </ng-template>
