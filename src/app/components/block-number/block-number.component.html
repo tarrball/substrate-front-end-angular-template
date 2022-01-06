@@ -1,7 +1,9 @@
 <mat-card>
   <mat-card-content>
-    <label class="block-number">{{blockNumber}}</label>
-    <label>{{finalized ? 'finalized' : 'current'}} block</label>
+    <div>
+      <label class="block-number">{{blockNumber}}</label>
+      <label>{{finalized ? 'finalized' : 'current'}} block</label>
+    </div>
   </mat-card-content>
   <mat-divider></mat-divider>
   <mat-card-footer>
