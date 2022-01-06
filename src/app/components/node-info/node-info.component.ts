@@ -4,20 +4,7 @@ import { SubstrateService } from 'src/app/services/substrate.service';
 
 @Component({
   selector: 'app-node-info',
-  template: `
-    <mat-card>
-      <mat-card-header>{{nodeName}}</mat-card-header>
-      <mat-card-content>
-        <label>{{chain}}</label>
-        <label>{{socket}}</label>
-      </mat-card-content>
-      <mat-divider></mat-divider>
-      <mat-card-footer>
-        <mat-icon aria-hidden="false" aria-label="Gear icon">gear</mat-icon>
-        {{nodeVersion}}
-      </mat-card-footer>
-    </mat-card>
-    `,
+  templateUrl: 'node-info.component.html',
   styleUrls: ['./node-info.component.sass']
 })
 export class NodeInfoComponent implements OnInit {

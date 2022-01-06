@@ -1,6 +1,9 @@
 <mat-card>
-    <mat-card-header>Metadata</mat-card-header>
-    <mat-card-content>v{{version}}</mat-card-content>
+    <mat-card-header>
+        <mat-card-title>Metadata</mat-card-title>
+        <mat-card-subtitle>v{{version}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content></mat-card-content>
     <mat-divider></mat-divider>
     <mat-card-footer>
         <button mat-raised-button color="primary" (click)="openDialog(metadataDialog)">Show Metadata</button>

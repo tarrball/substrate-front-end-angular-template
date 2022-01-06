@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+.block-header-row
+    align-items: stretch
+    display: flex
+    flex-wrap: wrap
+    justify-content: space-evenly
+    padding: 1rem 0
+
+    & > *
+        flex: 1 1 0
+        margin: 1rem
+
+    & .mat-card-header-text
+        margin: 0
+
+    & .mat-card-subtitle
+        margin-bottom: 0
+
+    & .mat-card
+        display: flex
+        flex-direction: column
+        height: 185px
+
+    & .mat-card-content
+        flex-grow: 1
+        margin-top: .5rem
+        color: rgba(0, 0, 0, .68)
+
+    & .mat-divider-horizontal
+        position: static !important
+
+    & .mat-card-footer
+        color: rgb(0, 0, 0, 0.4)
+        font-size: 1em
+        padding: 8px 16px
+
+    & .mat-icon
+        font-size: 1em
+        height: 1em
+        text-align: center
+        width: 1.18em
