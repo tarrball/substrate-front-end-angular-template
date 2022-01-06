@@ -8,13 +8,15 @@ import { BlockNumberComponent } from './components/block-number/block-number.com
 import { SharedModule } from './shared/shared.module';
 import { MetadataComponent } from './components/metadata/metadata.component';
 import { NodeInfoComponent } from './components/node-info/node-info.component';
+import { BalancesComponent } from './components/balances/balances.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BlockNumberComponent,
     MetadataComponent,
-    NodeInfoComponent
+    NodeInfoComponent,
+    BalancesComponent
   ],
   imports: [
     AppRoutingModule,
