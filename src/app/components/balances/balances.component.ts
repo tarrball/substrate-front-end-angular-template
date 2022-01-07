@@ -18,16 +18,6 @@ export class BalancesComponent implements OnInit {
 
   constructor(private substrateService: SubstrateService) { }
 
-  public copyAddress(tooltip: MatTooltip) {
-    tooltip.disabled = false;
-    tooltip.show();
-
-    setTimeout(() => {
-      tooltip.hide();
-      tooltip.disabled = true;
-    }, 1000);
-  }
-
   public ngOnInit(): void {
     this.substrateService.state
       .pipe(
@@ -46,5 +36,15 @@ export class BalancesComponent implements OnInit {
           })
           .catch(console.error);
       });
+  }
+
+  public show(tooltip: MatTooltip) {
+    tooltip.disabled = false;
+    tooltip.show();
+
+    setTimeout(() => {
+      tooltip.hide();
+      tooltip.disabled = true;
+    }, 1000);
   }
 }
