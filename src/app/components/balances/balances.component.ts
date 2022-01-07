@@ -17,17 +17,15 @@ export class BalancesComponent implements OnInit {
 
   public displayedColumns = ['name', 'address', 'balance'];
 
-  @ViewChild('tooltip') public tooltip!: MatTooltip;
-
   constructor(private substrateService: SubstrateService) { }
 
-  public copyAddress(address: string) {
-    this.tooltip.disabled = false;
-    this.tooltip.show();
+  public copyAddress(tooltip: MatTooltip) {
+    tooltip.disabled = false;
+    tooltip.show();
 
     setTimeout(() => {
-      this.tooltip.hide();
-      this.tooltip.disabled = true;
+      tooltip.hide();
+      tooltip.disabled = true;
     }, 1000);
   }
 
