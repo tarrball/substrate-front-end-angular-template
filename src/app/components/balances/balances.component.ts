@@ -1,5 +1,6 @@
 import { state } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTooltip, TooltipComponent } from '@angular/material/tooltip';
 import { filter, map, take } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
@@ -16,7 +17,19 @@ export class BalancesComponent implements OnInit {
 
   public displayedColumns = ['name', 'address', 'balance'];
 
+  @ViewChild('tooltip') public tooltip!: MatTooltip;
+
   constructor(private substrateService: SubstrateService) { }
+
+  public copyAddress(address: string) {
+    this.tooltip.disabled = false;
+    this.tooltip.show();
+
+    setTimeout(() => {
+      this.tooltip.hide();
+      this.tooltip.disabled = true;
+    }, 1000);
+  }
 
   public ngOnInit(): void {
     this.substrateService.state
@@ -36,9 +49,6 @@ export class BalancesComponent implements OnInit {
               new Account(address, balances[index].data.free.toHuman(), accounts[index].meta.name));
 
             console.log(this.accounts);
-          })
-          .then((unsub: any) => {
-            // unsubscribeAll = unsub;
           })
           .catch(console.error);
       });

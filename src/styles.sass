@@ -1,3 +1,31 @@
+$font-color: rgba(0, 0, 0, .87)
+
+body
+    color: $font-color
+
+h1
+    min-height: 1rem
+
+.mat-typography h1
+    font-size: 2rem
+    font-weight: 700
+
+.mat-table
+    border: 1px solid rgba(34,36,38,.15)
+    border-radius: .28571429rem
+    box-shadow: none
+    margin: 1em 0
+    width: 100%
+
+    & .mat-header-cell
+        color: $font-color
+
+    & tr td, & tr th
+        border-left: 1px solid rgba(34,36,38,.1)
+
+        &:first-child
+            border-left: unset
+
 .block-header-row
     align-items: stretch
     display: flex
@@ -8,6 +36,12 @@
     & > *
         flex: 1 1 0
         margin: 1rem
+
+        &:first-child
+            margin-left: 0
+
+        &:last-child
+            margin-right: 0
 
     & .mat-card-header-text
         margin: 0
