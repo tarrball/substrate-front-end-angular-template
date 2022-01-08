@@ -1,12 +1,29 @@
-<mat-form-field appearance="fill">
-    <mat-label>Select an account</mat-label>
-    <mat-select [(ngModel)]="selectedAddress" name="account">
-        <mat-option *ngFor="let account of accounts" [value]="account.address">
-            <!-- todo need user icon -->
-            {{account.name}}
-        </mat-option>
-    </mat-select>
-</mat-form-field>
-<div class="balance-annotation">
+<div class="container">
+    <mat-form-field appearance="fill">
+        <mat-label>Select an account</mat-label>
 
+        <input #trigger="matAutocompleteTrigger" type="text" placeholder="Pick one" aria-label="Account Name" matInput
+            [formControl]="accountControl" [matAutocomplete]="auto">
+
+        <button *ngIf="accountControl.value" matSuffix mat-icon-button aria-label="Clear"
+            (click)="clear($event, trigger)">
+            <mat-icon>close</mat-icon>
+        </button>
+
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let account of filteredAccounts | async" [value]="account">
+                <mat-icon>person</mat-icon>
+                <span>{{account}}</span>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="balance-annotation-container">
+        <span class="pointer"></span>
+        <div class="balance-annotation">
+            <!--TODO *ngIf="accountControl.value">-->
+            <mat-icon>local_atm</mat-icon>
+            <label>1,000,000</label>
+        </div>
+    </div>
 </div>

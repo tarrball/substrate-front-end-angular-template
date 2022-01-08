@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from './material.module';
-import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [],
@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   ], 
   exports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     MaterialModule
   ]
 })

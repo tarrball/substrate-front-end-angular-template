@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { filter, take } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
 
 import { SubstrateService } from 'src/app/services/substrate.service';
 
@@ -17,9 +19,15 @@ interface Account {
 })
 export class AccountSelectorComponent implements OnInit {
 
+  // @ViewChild('autoCompleteTrigger') public autoCompleteTrigger!: MatAutocompleteTrigger;
+
+  public accountControl = new FormControl();
+
   public accounts: Account[] = [];
 
-  public selectedAddress: string = '';
+  public selectedAddress = '';
+
+  public filteredAccounts: Observable<string[]> = EMPTY;
 
   constructor(private substrateService: SubstrateService) { }
 
@@ -39,6 +47,25 @@ export class AccountSelectorComponent implements OnInit {
         }));
 
         this.selectedAddress = this.accounts[0]?.address ?? '';
+
+        this.filteredAccounts = this.accountControl.valueChanges.pipe(
+          startWith(''),
+          map((value: string) => this.filter(value))
+        );
       })
+  }
+
+  private filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.accounts
+      .filter(option => option.name.toLowerCase().includes(filterValue))
+      .map(account => account.name);
+  }
+
+  public clear(event: Event, trigger: MatAutocompleteTrigger) {
+    this.accountControl.setValue('');
+    event.stopPropagation();
+    trigger.openPanel();
   }
 }
