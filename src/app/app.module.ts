@@ -9,6 +9,8 @@ import { SharedModule } from './shared/shared.module';
 import { MetadataComponent } from './components/metadata/metadata.component';
 import { NodeInfoComponent } from './components/node-info/node-info.component';
 import { BalancesComponent } from './components/balances/balances.component';
+import { HeaderComponent } from './components/header/header.component';
+import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { BalancesComponent } from './components/balances/balances.component';
     BlockNumberComponent,
     MetadataComponent,
     NodeInfoComponent,
-    BalancesComponent
+    BalancesComponent,
+    HeaderComponent,
+    AccountSelectorComponent
   ],
   imports: [
     AppRoutingModule,

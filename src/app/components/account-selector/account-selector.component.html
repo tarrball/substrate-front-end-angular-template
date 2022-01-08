@@ -1,0 +1,12 @@
+<mat-form-field appearance="fill">
+    <mat-label>Select an account</mat-label>
+    <mat-select [(ngModel)]="selectedAddress" name="account">
+        <mat-option *ngFor="let account of accounts" [value]="account.address">
+            <!-- todo need user icon -->
+            {{account.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<div class="balance-annotation">
+
+</div>
