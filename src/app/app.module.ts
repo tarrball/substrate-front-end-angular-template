@@ -12,19 +12,19 @@ import { BalancesComponent } from './components/balances/balances.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 import { TransferComponent } from './components/transfer/transfer.component';
-import { TransferButtonComponent } from './components/transfer-button/transfer-button.component';
+import { TransactionButtonGroupComponent } from './components/transaction-button-group/transaction-button-group.component';
 
 @NgModule({
   declarations: [
+    AccountSelectorComponent,
     AppComponent,
+    BalancesComponent,
     BlockNumberComponent,
+    HeaderComponent,
     MetadataComponent,
     NodeInfoComponent,
-    BalancesComponent,
-    HeaderComponent,
-    AccountSelectorComponent,
-    TransferComponent,
-    TransferButtonComponent
+    TransactionButtonGroupComponent,
+    TransferComponent
   ],
   imports: [
     AppRoutingModule,
