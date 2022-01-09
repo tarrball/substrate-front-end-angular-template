@@ -11,6 +11,7 @@ import { NodeInfoComponent } from './components/node-info/node-info.component';
 import { BalancesComponent } from './components/balances/balances.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
+import { TransferComponent } from './components/transfer/transfer.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AccountSelectorComponent } from './components/account-selector/account-
     NodeInfoComponent,
     BalancesComponent,
     HeaderComponent,
-    AccountSelectorComponent
+    AccountSelectorComponent,
+    TransferComponent
   ],
   imports: [
     AppRoutingModule,
