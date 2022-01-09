@@ -2,16 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
+import { Account } from 'src/app/data-contracts/account';
 
 import { SubstrateService } from 'src/app/services/substrate.service';
 
-// TODO don't call it account?
-// TODO reuse account contract?
-interface Account {
-  address: string,
-  name: string;
-}
-
+// TODO still needs the "no account selected functionality"
 @Component({
   selector: 'app-account-selector',
   templateUrl: './account-selector.component.html',
@@ -38,35 +33,42 @@ export class AccountSelectorComponent implements OnInit {
         take(1)
       )
       .subscribe((state) => {
-        const { keyring } = state;
+        // TODO this is basically copy/paste of balances component
+        const { api, keyring } = state;
+        const accounts = keyring.getPairs();
+        const addresses = accounts.map((account: { address: string }) => account.address);
 
-        // Get the list of accounts we possess the private key for
-        this.accounts = keyring.getPairs().map((account: any) => ({
-          address: account.address,
-          name: account.meta.name.toUpperCase()
-        }));
+        api.query.system.account
+          .multi(addresses, (balances: any) => {
+            this.accounts = addresses.map((address: string, index: number) =>
+              new Account(
+                address,
+                balances[index].data.free.toHuman(),
+                accounts[index].meta.name.toUpperCase()));
 
-        if (this.accounts[0]) {
-          this.selectAccount(this.accounts[0]);
-        }
+            // this is more closely what the react component did
+            // this.accounts = keyring.getPairs().map((account: any) => ({
+            //   address: account.address,
+            //   name: account.meta.name.toUpperCase()
+            // }));
 
-        this.filteredAccounts = this.accountControl.valueChanges.pipe(
-          startWith(''),
-          map((value: string) => this.filter(value))
-        );
+            if (this.accounts[0]) {
+              this.selectAccount(this.accounts[0]);
+            }
+
+            // this could be a testable function..
+            this.filteredAccounts = this.accountControl.valueChanges.pipe(
+              startWith(''),
+              map((value: string | Account) => typeof value === 'string'
+                ? value
+                : value.name),
+              map((name: string) => name
+                ? this.filter(name)
+                : this.accounts.slice())
+            );
+          })
+          .catch(console.error);
       })
-  }
-
-  // TODO rearrange functions?
-  public accountSelected(account: Account) {
-    console.log(account);
-    // const account = this.accounts.find(f => f.address === event.option.value);
-
-    // if (account) {
-    //   this.selectAccount(account);
-    // } else {
-    //   console.error('Account not found');
-    // }
   }
 
   public displayName(account: Account): string {
@@ -86,7 +88,6 @@ export class AccountSelectorComponent implements OnInit {
     });
   }
 
-  // TODO im broken
   private filter(value: string): Account[] {
     const filterValue = value.toLowerCase();
 
