@@ -1,4 +1,4 @@
-# SubstrateAngularTemplate
+# Substrate Front End TemplateTemplate
 
 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
