@@ -17,7 +17,7 @@ export class MetadataComponent implements OnInit {
   constructor(private substrateService: SubstrateService, private dialog: MatDialog) { }
 
   public ngOnInit(): void {
-    this.substrateService.state.subscribe(async (state) => {
+    this.substrateService.state$.subscribe(async (state) => {
       if (state.apiState !== 'READY') {
         return;
       }

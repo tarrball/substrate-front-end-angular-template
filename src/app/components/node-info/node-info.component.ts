@@ -20,7 +20,7 @@ export class NodeInfoComponent implements OnInit {
   constructor(private substrateService: SubstrateService) { }
 
   public ngOnInit(): void {
-    this.substrateService.state.subscribe(async (state) => {
+    this.substrateService.state$.subscribe(async (state) => {
       if (state.apiState === 'READY') {
         const { api, socket } = state;
 

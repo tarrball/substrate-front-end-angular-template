@@ -22,7 +22,7 @@ export class BlockNumberComponent implements OnInit {
 
   public ngOnInit(): void {
     // TODO clean up
-    this.substrateService.state.subscribe((state) => {
+    this.substrateService.state$.subscribe((state) => {
       if (state.apiState === 'READY') {
         const { api } = state;
 

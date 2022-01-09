@@ -32,7 +32,7 @@ export class AccountSelectorComponent implements OnInit {
   constructor(private substrateService: SubstrateService) { }
 
   public ngOnInit(): void {
-    this.substrateService.state
+    this.substrateService.state$
       .pipe(
         filter(state => state.apiState === 'READY' && state.api && state.keyring?.getPairs),
         take(1)
@@ -74,9 +74,10 @@ export class AccountSelectorComponent implements OnInit {
   }
 
   public selectAccount(account: Account) {
+    this.substrateService.selectAccount(account);
     this.selectedAccount = account;
 
-    const { api } = this.substrateService.state.value;
+    const { api } = this.substrateService.state$.value;
 
     // TODO error handling?
     // TODO hide more in substrate service?

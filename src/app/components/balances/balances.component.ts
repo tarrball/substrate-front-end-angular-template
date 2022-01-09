@@ -19,7 +19,7 @@ export class BalancesComponent implements OnInit {
   constructor(private substrateService: SubstrateService) { }
 
   public ngOnInit(): void {
-    this.substrateService.state
+    this.substrateService.state$
       .pipe(
         filter(state => state.apiState === 'READY' && state.api && state.keyring?.getPairs),
         take(1)

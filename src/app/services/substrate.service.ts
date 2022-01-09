@@ -8,8 +8,10 @@ import { keyring } from '@polkadot/ui-keyring';
 
 import { SubstrateState } from '../contracts/substrate-state';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Account } from '../data-contracts/account';
 
+// todo this service needs a lot of cleanup love
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +21,7 @@ export class SubstrateService {
 
   // todo public state obviously not a good idea, but
   // proof of concept
-  public state = new BehaviorSubject<SubstrateState>({
+  public state$ = new BehaviorSubject<SubstrateState>({
     socket: environment.providerSocket,
     jsonrpc: { ...jsonrpc, ...environment.rpc },
     keyring: null,
@@ -29,8 +31,12 @@ export class SubstrateService {
     apiState: null
   });
 
+  private _selectedAccount$ = new BehaviorSubject<Account | null>(null);
+
+  public get selectedAccount$(): Observable<Account | null> { return this._selectedAccount$.asObservable() };
+
   public connectToNode() {
-    const { apiState, socket, jsonrpc } = this.state.value;
+    const { apiState, socket, jsonrpc } = this.state$.value;
 
     // We only want this function to be performed once
     if (apiState) {
@@ -40,20 +46,20 @@ export class SubstrateService {
     this.updateState({ type: 'CONNECT_INIT' });
 
     const provider = new WsProvider(socket);
-    const _api = new ApiPromise({ provider, rpc: jsonrpc });
+    const api = new ApiPromise({ provider, rpc: jsonrpc });
 
     // Set listeners for disconnection and reconnection event.
-    _api.on('connected', () => {
-      this.updateState({ type: 'CONNECT', payload: _api });
+    api.on('connected', () => {
+      this.updateState({ type: 'CONNECT', payload: api });
 
       // `ready` event is not emitted upon reconnection and is checked explicitly here.
-      _api.isReady.then((_api) => {
+      api.isReady.then((_api) => {
         this.updateState({ type: 'CONNECT_SUCCESS' });
       });
     });
 
-    _api.on('ready', () => this.updateState({ type: 'CONNECT_SUCCESS' }));
-    _api.on('error', err => this.updateState({ type: 'CONNECT_ERROR', payload: err }));
+    api.on('ready', () => this.updateState({ type: 'CONNECT_SUCCESS' }));
+    api.on('error', err => this.updateState({ type: 'CONNECT_ERROR', payload: err }));
   }
 
   public loadAccounts() {
@@ -74,7 +80,7 @@ export class SubstrateService {
       }
     };
 
-    const { keyringState } = this.state.value;
+    const { keyringState } = this.state$.value;
     // If `keyringState` is not null `asyncLoadAccounts` is running.
     if (keyringState) {
       return;
@@ -91,8 +97,8 @@ export class SubstrateService {
   }
 
   private updateState(action: any) {
-    const newState = this.reducer(this.state.value, action);
-    this.state.next(newState);
+    const newState = this.reducer(this.state$.value, action);
+    this.state$.next(newState);
   }
 
   private reducer(state: SubstrateState, action: any) {
@@ -131,5 +137,9 @@ export class SubstrateService {
       default:
         throw new Error(`Unknown type: ${action.type}`);
     }
+  }
+
+  public selectAccount(account: Account) {
+    this._selectedAccount$.next(account);
   }
 }
