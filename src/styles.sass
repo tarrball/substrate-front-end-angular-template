@@ -1,1 +1,74 @@
-/* You can add global styles to this file, and also import other style files */
+$font-color: rgba(0, 0, 0, .87)
+
+body
+    color: $font-color
+
+h1
+    min-height: 1rem
+
+.mat-typography h1
+    font-size: 2rem
+    font-weight: 700
+
+.mat-table
+    border: 1px solid rgba(34,36,38,.15)
+    border-radius: .28571429rem
+    box-shadow: none
+    margin: 1em 0
+    width: 100%
+
+    & .mat-header-cell
+        color: $font-color
+
+    & tr td, & tr th
+        border-left: 1px solid rgba(34,36,38,.1)
+
+        &:first-child
+            border-left: unset
+
+.block-header-row
+    align-items: stretch
+    display: flex
+    flex-wrap: wrap
+    justify-content: space-evenly
+    padding: 1rem 0
+
+    & > *
+        flex: 1 1 0
+        margin: 1rem
+
+        &:first-child
+            margin-left: 0
+
+        &:last-child
+            margin-right: 0
+
+    & .mat-card-header-text
+        margin: 0
+
+    & .mat-card-subtitle
+        margin-bottom: 0
+
+    & .mat-card
+        display: flex
+        flex-direction: column
+        height: 145px
+
+    & .mat-card-content
+        flex-grow: 1
+        margin-top: .5rem
+        color: rgba(0, 0, 0, .68)
+
+    & .mat-divider-horizontal
+        position: static !important
+
+    & .mat-card-footer
+        color: rgb(0, 0, 0, 0.4)
+        font-size: 1em
+        padding: 8px 16px
+
+    & .mat-icon
+        font-size: 1em
+        height: 1em
+        text-align: center
+        width: 1.18em

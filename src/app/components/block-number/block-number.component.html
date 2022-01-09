@@ -1,0 +1,13 @@
+<mat-card>
+  <mat-card-content>
+    <div>
+      <label class="block-number">{{blockNumber}}</label>
+      <label>{{finalized ? 'finalized' : 'current'}} block</label>
+    </div>
+  </mat-card-content>
+  <mat-divider></mat-divider>
+  <mat-card-footer>
+    <mat-icon aria-hidden="false" aria-label="Timer icon">watch_later</mat-icon>
+    {{blockNumberTimer}}
+  </mat-card-footer>
+</mat-card>

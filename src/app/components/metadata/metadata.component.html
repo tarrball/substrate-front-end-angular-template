@@ -1,0 +1,22 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Metadata</mat-card-title>
+        <mat-card-subtitle>v{{version}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content></mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-footer>
+        <button mat-raised-button color="primary" (click)="openDialog(metadataDialog)">Show Metadata</button>
+    </mat-card-footer>
+</mat-card>
+
+<ng-template #metadataDialog>
+    <h1 mat-dialog-title>Runtime Metadata</h1>
+    <mat-divider></mat-divider>
+    <div mat-dialog-content>
+        <pre><code>{{metadata}}</code></pre>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Close</button>
+      </mat-dialog-actions>
+</ng-template>
