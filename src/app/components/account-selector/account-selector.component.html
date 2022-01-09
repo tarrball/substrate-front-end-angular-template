@@ -10,20 +10,20 @@
             <mat-icon>close</mat-icon>
         </button>
 
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayName"
+            (optionSelected)="selectAccount($event.option.value)">
             <mat-option *ngFor="let account of filteredAccounts | async" [value]="account">
                 <mat-icon>person</mat-icon>
-                <span>{{account}}</span>
+                <span>{{account.name}}</span>
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
 
-    <div class="balance-annotation-container">
+    <div class="balance-annotation-container" *ngIf="selectedAccount">
         <span class="pointer"></span>
         <div class="balance-annotation">
-            <!--TODO *ngIf="accountControl.value">-->
             <mat-icon>local_atm</mat-icon>
-            <label>1,000,000</label>
+            <label>{{selectedAccountBalance}}</label>
         </div>
     </div>
 </div>

@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
 
 import { SubstrateService } from 'src/app/services/substrate.service';
@@ -19,15 +19,15 @@ interface Account {
 })
 export class AccountSelectorComponent implements OnInit {
 
-  // @ViewChild('autoCompleteTrigger') public autoCompleteTrigger!: MatAutocompleteTrigger;
-
   public accountControl = new FormControl();
 
   public accounts: Account[] = [];
 
-  public selectedAddress = '';
+  public selectedAccount?: Account;
 
-  public filteredAccounts: Observable<string[]> = EMPTY;
+  public selectedAccountBalance?: string;
+
+  public filteredAccounts: Observable<Account[]> = EMPTY;
 
   constructor(private substrateService: SubstrateService) { }
 
@@ -46,7 +46,9 @@ export class AccountSelectorComponent implements OnInit {
           name: account.meta.name.toUpperCase()
         }));
 
-        this.selectedAddress = this.accounts[0]?.address ?? '';
+        if (this.accounts[0]) {
+          this.selectAccount(this.accounts[0]);
+        }
 
         this.filteredAccounts = this.accountControl.valueChanges.pipe(
           startWith(''),
@@ -55,12 +57,40 @@ export class AccountSelectorComponent implements OnInit {
       })
   }
 
-  private filter(value: string): string[] {
+  // TODO rearrange functions?
+  public accountSelected(account: Account) {
+    console.log(account);
+    // const account = this.accounts.find(f => f.address === event.option.value);
+
+    // if (account) {
+    //   this.selectAccount(account);
+    // } else {
+    //   console.error('Account not found');
+    // }
+  }
+
+  public displayName(account: Account): string {
+    return account.name;
+  }
+
+  public selectAccount(account: Account) {
+    this.selectedAccount = account;
+
+    const { api } = this.substrateService.state.value;
+
+    // TODO error handling?
+    // TODO hide more in substrate service?
+    api.query.system.account(this.selectedAccount?.address, (balance: any) => {
+      this.selectedAccountBalance = balance.data.free.toHuman();
+    });
+  }
+
+  // TODO im broken
+  private filter(value: string): Account[] {
     const filterValue = value.toLowerCase();
 
     return this.accounts
-      .filter(option => option.name.toLowerCase().includes(filterValue))
-      .map(account => account.name);
+      .filter(account => account.name.toLowerCase().includes(filterValue));
   }
 
   public clear(event: Event, trigger: MatAutocompleteTrigger) {
