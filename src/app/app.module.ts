@@ -12,6 +12,7 @@ import { BalancesComponent } from './components/balances/balances.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 import { TransferComponent } from './components/transfer/transfer.component';
+import { TransferButtonComponent } from './components/transfer-button/transfer-button.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { TransferComponent } from './components/transfer/transfer.component';
     BalancesComponent,
     HeaderComponent,
     AccountSelectorComponent,
-    TransferComponent
+    TransferComponent,
+    TransferButtonComponent
   ],
   imports: [
     AppRoutingModule,
