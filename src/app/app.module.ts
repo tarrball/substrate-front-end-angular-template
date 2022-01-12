@@ -12,7 +12,10 @@ import { BalancesComponent } from './components/balances/balances.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 import { TransferComponent } from './components/transfer/transfer.component';
-import { TransactionButtonGroupComponent } from './components/transaction-button-group/transaction-button-group.component';
+import { InteractorComponent } from './components/interactor/interactor.component';
+import { UpgradeComponent } from './components/upgrade/upgrade.component';
+import { EventsComponent } from './components/events/events.component';
+import { TemplateModuleComponent } from './components/template-module/template-module.component';
 
 @NgModule({
   declarations: [
@@ -23,8 +26,11 @@ import { TransactionButtonGroupComponent } from './components/transaction-button
     HeaderComponent,
     MetadataComponent,
     NodeInfoComponent,
-    TransactionButtonGroupComponent,
-    TransferComponent
+    InteractorComponent,
+    TransferComponent,
+    UpgradeComponent,
+    EventsComponent,
+    TemplateModuleComponent
   ],
   imports: [
     AppRoutingModule,
