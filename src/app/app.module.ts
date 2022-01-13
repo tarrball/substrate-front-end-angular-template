@@ -30,7 +30,7 @@ import { TemplateModuleComponent } from './components/template-module/template-m
     TransferComponent,
     UpgradeComponent,
     EventsComponent,
-    TemplateModuleComponent
+    TemplateModuleComponent,
   ],
   imports: [
     AppRoutingModule,
