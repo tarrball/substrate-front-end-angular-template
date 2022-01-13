@@ -12,19 +12,25 @@ import { BalancesComponent } from './components/balances/balances.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 import { TransferComponent } from './components/transfer/transfer.component';
-import { TransferButtonComponent } from './components/transfer-button/transfer-button.component';
+import { InteractorComponent } from './components/interactor/interactor.component';
+import { UpgradeComponent } from './components/upgrade/upgrade.component';
+import { EventsComponent } from './components/events/events.component';
+import { TemplateModuleComponent } from './components/template-module/template-module.component';
 
 @NgModule({
   declarations: [
+    AccountSelectorComponent,
     AppComponent,
+    BalancesComponent,
     BlockNumberComponent,
+    HeaderComponent,
     MetadataComponent,
     NodeInfoComponent,
-    BalancesComponent,
-    HeaderComponent,
-    AccountSelectorComponent,
+    InteractorComponent,
     TransferComponent,
-    TransferButtonComponent
+    UpgradeComponent,
+    EventsComponent,
+    TemplateModuleComponent,
   ],
   imports: [
     AppRoutingModule,

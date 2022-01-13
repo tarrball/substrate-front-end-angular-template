@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TransferButtonComponent } from './transfer-button.component';
+import { PointerLabelComponent } from './pointer-label.component';
 
-describe('TransferButtonComponent', () => {
-  let component: TransferButtonComponent;
-  let fixture: ComponentFixture<TransferButtonComponent>;
+describe('PointerLabelComponent', () => {
+  let component: PointerLabelComponent;
+  let fixture: ComponentFixture<PointerLabelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TransferButtonComponent ]
+      declarations: [ PointerLabelComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TransferButtonComponent);
+    fixture = TestBed.createComponent(PointerLabelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
