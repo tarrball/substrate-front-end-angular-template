@@ -1,1 +1,12 @@
 <h1>Upgrade Runtime</h1>
+
+<div class="container">
+    <div class="file-input-container">
+        <div>
+            <label>Wasm File</label>
+        </div>
+        <input type="file" accept=".wasm" (change)="handleFileChosen($event)">
+    </div>
+
+    <button mat-raised-button color="primary">Upgrade</button>
+</div>

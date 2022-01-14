@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-upgrade',
   templateUrl: './upgrade.component.html',
   styleUrls: ['./upgrade.component.sass']
 })
-export class UpgradeComponent implements OnInit {
+export class UpgradeComponent {
 
   constructor() { }
 
-  ngOnInit(): void {
+  public handleFileChosen(event: Event): void {
+    console.log(event);
   }
-
 }
