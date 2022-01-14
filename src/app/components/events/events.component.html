@@ -1,1 +1,17 @@
-<h1>Events</h1>
+<div class="header-container">
+    <h1>Events</h1>
+    <button mat-icon-button aria-label="Clear event feed button" class="btn-erase" matTooltip="Clear event feed"
+        matTooltipPosition="above" (click)="clearEventFeed()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div class="feed-container">
+    <div class="feed-item" *ngFor="let item of feedItems">
+        <mat-icon>notifications</mat-icon>
+        <div>
+            <label>{{item.name}}</label>
+            <label>{{item.params}}</label>
+        </div>
+    </div>
+</div>

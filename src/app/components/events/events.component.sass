@@ -1,0 +1,35 @@
+.header-container
+    display: flex
+    
+    h1
+        flex-grow: 1
+
+    // copied from balances sass
+    .btn-erase
+        box-shadow: 0 0 0 1px #2185d0 inset !important
+        color: #2185d0 !important
+        line-height: 24px
+        max-height: 24px
+        max-width: 24px
+
+        .mat-icon
+            font-size: 14px
+            padding-bottom: 1px
+
+.feed-container
+    align-items: stretch
+    display: flex
+    flex-direction: column    
+    overflow-y: auto
+
+    .feed-item
+        align-items: center
+        display: flex
+
+        & > div
+            display: flex
+            flex-direction: column
+
+            label:first-child
+                font-weight: 500
+                            
