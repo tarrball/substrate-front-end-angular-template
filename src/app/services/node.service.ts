@@ -7,7 +7,7 @@ import { keyring } from '@polkadot/ui-keyring';
 
 import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, take } from 'rxjs';
 import { Account } from '../data-contracts/account';
 
 // todo this service needs a lot of cleanup love
@@ -34,7 +34,15 @@ export class NodeService {
 
   public get selectedAccount$(): Observable<Account | null> { return this._selectedAccount$.asObservable() };
 
-  public connectToNode() {
+  // should only be callable once
+  public initialize(): Observable<NodeState> {
+    this.connectToNode();
+    this.loadAccounts();
+
+    return this.state$.asObservable();
+  }
+
+  private connectToNode() {
     const { apiState, socket, jsonrpc } = this.state$.value;
 
     // We only want this function to be performed once
@@ -61,7 +69,7 @@ export class NodeService {
     api.on('error', err => this.updateState({ type: 'CONNECT_ERROR', payload: err }));
   }
 
-  public loadAccounts() {
+  private loadAccounts() {
     const asyncLoadAccounts = async () => {
       this.updateState({ type: 'LOAD_KEYRING' });
 
@@ -101,14 +109,14 @@ export class NodeService {
   }
 
   private reducer(state: NodeState, action: any) {
-    console.log('-------------------------');
-    console.log('reducer state:');
-    console.log(state);
-    console.log('-------------------------');
+    // console.log('-------------------------');
+    // console.log('reducer state:');
+    // console.log(state);
+    // console.log('-------------------------');
 
-    console.log('reducer action:');
-    console.log(action);
-    console.log('-------------------------');
+    // console.log('reducer action:');
+    // console.log(action);
+    // console.log('-------------------------');
 
     // TODO use enum
     switch (action.type) {

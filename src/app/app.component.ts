@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { filter, take } from 'rxjs';
 
 import { NodeService } from './services/node.service';
 
@@ -8,14 +9,14 @@ import { NodeService } from './services/node.service';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit {
-  public title = 'substrate-angular-template';
+  public initializing = true;
 
   public constructor(private nodeService: NodeService) {
   }
 
   public ngOnInit() {
-    // TODO route guard before gettin other components?
-    this.nodeService.connectToNode();
-    this.nodeService.loadAccounts();
+    this.nodeService.initialize()
+      .pipe(filter((f) => f.apiState === 'READY'), take(1))
+      .subscribe(() => this.initializing = false);
   }
 }
