@@ -1,9 +1,37 @@
 <h1>Pallet Interactor</h1>
 
-<div class="container">
+<div class="input-container">
+    <h3>Interaction Type</h3>
+    <mat-button-toggle-group name="iteractionType" aria-name="Interation Type">
+        <mat-button-toggle value="extrinsic">Extrinsic</mat-button-toggle>
+        <mat-button-toggle value="query">Query</mat-button-toggle>
+        <mat-button-toggle value="rpc">RPC</mat-button-toggle>
+        <mat-button-toggle value="constant">Constant</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Pallets / RPC</mat-label>
+        <mat-select>
+            <mat-option>balances</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Callables</mat-label>
+        <mat-select>
+            <mat-option>forceTransfer</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <!-- TODO *ngFor param inputs -->
+</div>
+
+<div class="btn-container">
     <button mat-raised-button [disabled]="unsignedDisabled">Unsigned</button>
     <label>or</label>
     <button mat-raised-button [disabled]="signedDisabled" color="primary">Signed</button>
     <label>or</label>
     <button mat-raised-button [disabled]="sudoDisabled" color="warn">SUDO</button>
 </div>
+
+<!-- TODO - status label -->
