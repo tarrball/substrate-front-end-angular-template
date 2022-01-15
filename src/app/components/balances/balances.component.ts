@@ -3,7 +3,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { filter, take } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
-import { SubstrateService } from 'src/app/services/substrate.service';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-balances',
@@ -16,10 +16,10 @@ export class BalancesComponent implements OnInit {
 
   public displayedColumns = ['name', 'address', 'balance'];
 
-  constructor(private substrateService: SubstrateService) { }
+  constructor(private nodeService: NodeService) { }
 
   public ngOnInit(): void {
-    this.substrateService.state$
+    this.nodeService.state$
       .pipe(
         filter(state => state.apiState === 'READY' && state.api && state.keyring?.getPairs),
         take(1)

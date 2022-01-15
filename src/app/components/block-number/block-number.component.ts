@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 
-import { SubstrateService } from 'src/app/services/substrate.service';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-block-number',
@@ -18,11 +18,11 @@ export class BlockNumberComponent implements OnInit {
 
   private timerSubscription?: Subscription;
 
-  constructor(private substrateService: SubstrateService) { }
+  constructor(private nodeService: NodeService) { }
 
   public ngOnInit(): void {
     // TODO clean up
-    this.substrateService.state$.subscribe((state) => {
+    this.nodeService.state$.subscribe((state) => {
       if (state.apiState === 'READY') {
         const { api } = state;
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SubstrateService } from './services/substrate.service';
+import { NodeService } from './services/node.service';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +10,12 @@ import { SubstrateService } from './services/substrate.service';
 export class AppComponent implements OnInit {
   public title = 'substrate-angular-template';
 
-  public constructor(private substrateService: SubstrateService) {
+  public constructor(private nodeService: NodeService) {
   }
 
   public ngOnInit() {
     // TODO route guard before gettin other components?
-    this.substrateService.connectToNode();
-    this.substrateService.loadAccounts();
+    this.nodeService.connectToNode();
+    this.nodeService.loadAccounts();
   }
 }
