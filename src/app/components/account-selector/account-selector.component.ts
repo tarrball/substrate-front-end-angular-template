@@ -4,7 +4,7 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/m
 import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
 import { Account } from 'src/app/data-contracts/account';
 
-import { SubstrateService } from 'src/app/services/substrate.service';
+import { NodeService } from 'src/app/services/node.service';
 
 // TODO still needs the "no account selected functionality"
 @Component({
@@ -24,10 +24,10 @@ export class AccountSelectorComponent implements OnInit {
 
   public filteredAccounts: Observable<Account[]> = EMPTY;
 
-  constructor(private substrateService: SubstrateService) { }
+  constructor(private nodeService: NodeService) { }
 
   public ngOnInit(): void {
-    this.substrateService.state$
+    this.nodeService.state$
       .pipe(
         filter(state => state.apiState === 'READY' && state.api && state.keyring?.getPairs),
         take(1)
@@ -76,10 +76,10 @@ export class AccountSelectorComponent implements OnInit {
   }
 
   public selectAccount(account: Account) {
-    this.substrateService.selectAccount(account);
+    this.nodeService.selectAccount(account);
     this.selectedAccount = account;
 
-    const { api } = this.substrateService.state$.value;
+    const { api } = this.nodeService.state$.value;
 
     // TODO error handling?
     // TODO hide more in substrate service?

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SubstrateService } from 'src/app/services/substrate.service';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-node-info',
@@ -17,10 +17,10 @@ export class NodeInfoComponent implements OnInit {
 
   public socket = '';
 
-  constructor(private substrateService: SubstrateService) { }
+  constructor(private nodeService: NodeService) { }
 
   public ngOnInit(): void {
-    this.substrateService.state$.subscribe(async (state) => {
+    this.nodeService.state$.subscribe(async (state) => {
       if (state.apiState === 'READY') {
         const { api, socket } = state;
 

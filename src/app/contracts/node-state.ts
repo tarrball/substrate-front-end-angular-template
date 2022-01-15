@@ -1,4 +1,4 @@
-export interface SubstrateState {
+export interface NodeState {
     socket: string,
     jsonrpc: any,
     keyring: any,

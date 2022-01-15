@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 
-// TODO polkadot service
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { keyring } from '@polkadot/ui-keyring';
 
-import { SubstrateState } from '../contracts/substrate-state';
+import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Account } from '../data-contracts/account';
@@ -15,13 +14,13 @@ import { Account } from '../data-contracts/account';
 @Injectable({
   providedIn: 'root'
 })
-export class SubstrateService {
+export class NodeService {
 
   private loadAccts = false;
 
   // todo public state obviously not a good idea, but
   // proof of concept
-  public state$ = new BehaviorSubject<SubstrateState>({
+  public state$ = new BehaviorSubject<NodeState>({
     socket: environment.providerSocket,
     jsonrpc: { ...jsonrpc, ...environment.rpc },
     keyring: null,
@@ -101,7 +100,7 @@ export class SubstrateService {
     this.state$.next(newState);
   }
 
-  private reducer(state: SubstrateState, action: any) {
+  private reducer(state: NodeState, action: any) {
     console.log('-------------------------');
     console.log('reducer state:');
     console.log(state);

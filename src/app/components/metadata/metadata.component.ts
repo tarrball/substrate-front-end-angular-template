@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { SubstrateService } from 'src/app/services/substrate.service';
+import { NodeService } from 'src/app/services/node.service';
 
 @Component({
   selector: 'app-metadata',
@@ -14,10 +14,10 @@ export class MetadataComponent implements OnInit {
 
   public version?: string;
 
-  constructor(private substrateService: SubstrateService, private dialog: MatDialog) { }
+  constructor(private nodeService: NodeService, private dialog: MatDialog) { }
 
   public ngOnInit(): void {
-    this.substrateService.state$.subscribe(async (state) => {
+    this.nodeService.state$.subscribe(async (state) => {
       if (state.apiState !== 'READY') {
         return;
       }
