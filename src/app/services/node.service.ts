@@ -149,4 +149,85 @@ export class NodeService {
   public selectAccount(account: Account) {
     this._selectedAccount$.next(account);
   }
+
+  public transfer(amount: number, toAddress: string): Observable<string> {
+    const palletRpc = 'balances';
+    const callable = 'transfer';
+
+    const status$ = new BehaviorSubject<string>('Sending...');
+    // it's signed (type = 'SIGNED-TX)
+    // todo not doing polkadot.js extension transfers yet
+
+    const params = this.transformParams([toAddress, amount], [true, true]);
+    const txExecute = this.state$.value.api.tx[palletRpc][callable](...params);
+
+    // todo assert we have from address?
+    // todo unsub?
+    // todo rx?
+    /*await*/ txExecute.signAndSend(
+      this._selectedAccount$.value!.address,
+      (result: any) => {
+        status$.next(result.status.isFinalized ?
+          `😉 Finalized. Block hash: ${result.status.asFinalized.toString()}`
+          : `Current transaction status: ${result.status.type}`)
+      })
+      .catch((err: any) => {
+        status$.next(`😞 Transaction Failed: ${err.toString()}`);
+      });
+
+    return status$.asObservable();
+  }
+
+  private transformParams(paramFields: any, inputParams: any, opts = { emptyAsNull: true }): any {
+    // if `opts.emptyAsNull` is true, empty param value will be added to res as `null`.
+    //   Otherwise, it will not be added
+    const paramVal = inputParams.map((inputParam: any) => {
+      // To cater the js quirk that `null` is a type of `object`.
+      if (typeof inputParam === 'object' && inputParam !== null && typeof inputParam.value === 'string') {
+        return inputParam.value.trim();
+      } else if (typeof inputParam === 'string') {
+        return inputParam.trim();
+      }
+      return inputParam;
+    });
+
+    const params = paramFields.map((field: any, ind: any) => ({ ...field, value: paramVal[ind] || null }));
+
+    return params.reduce((memo: any, { type = 'string', value }: any) => {
+      if (value == null || value === '') return (opts.emptyAsNull ? [...memo, null] : memo);
+
+      let converted = value;
+
+      // Deal with a vector
+      if (type.indexOf('Vec<') >= 0) {
+        converted = converted.split(',').map((e: any) => e.trim());
+        converted = converted.map((single: any) => this.isNumType(type)
+          ? (single.indexOf('.') >= 0 ? Number.parseFloat(single) : Number.parseInt(single))
+          : single
+        );
+        return [...memo, converted];
+      }
+
+      // Deal with a single value
+      if (this.isNumType(type)) {
+        converted = converted.indexOf('.') >= 0 ? Number.parseFloat(converted) : Number.parseInt(converted);
+      }
+      return [...memo, converted];
+    }, []);
+  };
+
+  private isNumType(type: any): boolean {
+    return this.utils.paramConversion.num.some(el => type.indexOf(el) >= 0);
+  }
+
+  utils = {
+    paramConversion: {
+      num: [
+        'Compact<Balance>',
+        'BalanceOf',
+        'u8', 'u16', 'u32', 'u64', 'u128',
+        'i8', 'i16', 'i32', 'i64', 'i128'
+      ]
+    }
+  };
 }

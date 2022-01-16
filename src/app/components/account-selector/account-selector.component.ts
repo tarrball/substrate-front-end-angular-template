@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
-import { Account } from 'src/app/data-contracts/account';
 
+import { Account } from 'src/app/data-contracts/account';
 import { NodeService } from 'src/app/services/node.service';
 
 // TODO still needs the "no account selected functionality"
@@ -46,16 +46,6 @@ export class AccountSelectorComponent implements OnInit {
                 balances[index].data.free.toHuman(),
                 accounts[index].meta.name.toUpperCase()));
 
-            // this is more closely what the react component did
-            // this.accounts = keyring.getPairs().map((account: any) => ({
-            //   address: account.address,
-            //   name: account.meta.name.toUpperCase()
-            // }));
-
-            if (this.accounts[0]) {
-              this.selectAccount(this.accounts[0]);
-            }
-
             // this could be a testable function..
             this.filteredAccounts = this.accountControl.valueChanges.pipe(
               startWith(''),
@@ -66,13 +56,18 @@ export class AccountSelectorComponent implements OnInit {
                 ? this.filter(name)
                 : this.accounts.slice())
             );
+
+            if (this.accounts[0]) {
+              this.accountControl.setValue(this.accounts[0]);
+              this.selectAccount(this.accounts[0]);
+            }
           })
           .catch(console.error);
       })
   }
 
   public displayName(account: Account): string {
-    return account.name;
+    return account?.name ?? '';
   }
 
   public selectAccount(account: Account) {

@@ -1,22 +1,21 @@
 <h1>Transfer</h1>
 
-<div class="container">
+<form [formGroup]="transferForm">
     <shared-pointer-label [text]="'1 Unit = 1000000000000'"></shared-pointer-label>
 
     <shared-pointer-label [text]="'Transfer more than the existential amount for account with 0 balance'">
     </shared-pointer-label>
-
     <mat-form-field appearance="fill">
         <mat-label>To</mat-label>
-        <input matInput placeholder="Address">
+        <input formControlName="toAddress" matInput placeholder="Address">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Amount</mat-label>
-        <input matInput type="number" min=0>
+        <input formControlName="amount" matInput type="number" min=0>
     </mat-form-field>
 
-    <button mat-raised-button color="primary">Submit</button>
+    <button [disabled]="transferForm.invalid" mat-raised-button color="primary" (click)="submit()">Submit</button>
 
     <!-- TODO - transfer status label -->
-</div>
+</form>
