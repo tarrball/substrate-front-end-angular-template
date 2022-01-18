@@ -158,14 +158,15 @@ export class NodeService {
     // it's signed (type = 'SIGNED-TX)
     // todo not doing polkadot.js extension transfers yet
 
-    const params = this.transformParams([toAddress, amount], [true, true]);
+    const params = this.transformParams([true, true], [toAddress, amount]);
     const txExecute = this.state$.value.api.tx[palletRpc][callable](...params);
 
     // todo assert we have from address?
     // todo unsub?
     // todo rx?
-    /*await*/ txExecute.signAndSend(
-      this._selectedAccount$.value!.address,
+    const keyPair = this.state$.value.keyring.getPair(this._selectedAccount$.value!.address);
+
+    /*await*/ txExecute.signAndSend(keyPair,
       (result: any) => {
         status$.next(result.status.isFinalized ?
           `😉 Finalized. Block hash: ${result.status.asFinalized.toString()}`
