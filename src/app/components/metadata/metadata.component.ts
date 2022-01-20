@@ -4,32 +4,36 @@ import { MatDialog } from '@angular/material/dialog';
 import { NodeService } from 'src/app/services/node.service';
 
 @Component({
-  selector: 'app-metadata',
-  templateUrl: './metadata.component.html',
-  styleUrls: ['./metadata.component.sass']
+    selector: 'app-metadata',
+    templateUrl: './metadata.component.html',
+    styleUrls: ['./metadata.component.sass']
 })
 export class MetadataComponent implements OnInit {
 
-  public metadata?: string;
+    public metadata?: string;
 
-  public version?: string;
+    public version?: string;
 
-  constructor(private nodeService: NodeService, private dialog: MatDialog) { }
+    constructor(private nodeService: NodeService, private dialog: MatDialog) { }
 
-  public ngOnInit(): void {
-    this.nodeService.state$.subscribe(async (state) => {
-      if (state.apiState !== 'READY') {
-        return;
-      }
+    public ngOnInit(): void {
+        this.nodeService.state$.subscribe(async (state) => {
+            if (state?.apiState !== 'READY') {
+                return;
+            }
 
-      const data = await state.api.rpc.state.getMetadata();
+            if (state.api == null) {
+                throw 'api is null';
+            }
 
-      this.metadata = JSON.stringify(data, null, 2);
-      this.version = data.version;
-    })
-  }
+            const data = await state.api.rpc.state.getMetadata();
 
-  public openDialog(templateRef: TemplateRef<any>) {
-    this.dialog.open(templateRef);
-  }
+            this.metadata = JSON.stringify(data, null, 2);
+            this.version = data.version.toString();
+        })
+    }
+
+    public openDialog(templateRef: TemplateRef<any>) {
+        this.dialog.open(templateRef);
+    }
 }

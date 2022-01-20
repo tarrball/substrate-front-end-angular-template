@@ -18,7 +18,9 @@
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "rules": {}
+      "rules": {
+        "indent": ["error", 4]
+      }
     },
     {
       "files": [

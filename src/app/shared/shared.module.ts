@@ -6,18 +6,18 @@ import { MaterialModule } from './material.module';
 import { PointerLabelComponent } from './components/pointer-label/pointer-label.component';
 
 @NgModule({
-  declarations: [
-    PointerLabelComponent
-  ],
-  imports: [
-    CommonModule,
-    MaterialModule
-  ], 
-  exports: [
-    CommonModule,
-    PointerLabelComponent,
-    MaterialModule,
-    ReactiveFormsModule,    
-  ]
+    declarations: [
+        PointerLabelComponent
+    ],
+    imports: [
+        CommonModule,
+        MaterialModule
+    ], 
+    exports: [
+        CommonModule,
+        PointerLabelComponent,
+        MaterialModule,
+        ReactiveFormsModule,    
+    ]
 })
 export class SharedModule { }

@@ -18,27 +18,27 @@ import { EventsComponent } from './components/events/events.component';
 import { TemplateModuleComponent } from './components/template-module/template-module.component';
 
 @NgModule({
-  declarations: [
-    AccountSelectorComponent,
-    AppComponent,
-    BalancesComponent,
-    BlockNumberComponent,
-    HeaderComponent,
-    MetadataComponent,
-    NodeInfoComponent,
-    InteractorComponent,
-    TransferComponent,
-    UpgradeComponent,
-    EventsComponent,
-    TemplateModuleComponent,
-  ],
-  imports: [
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    BrowserModule,
-    SharedModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AccountSelectorComponent,
+        AppComponent,
+        BalancesComponent,
+        BlockNumberComponent,
+        HeaderComponent,
+        MetadataComponent,
+        NodeInfoComponent,
+        InteractorComponent,
+        TransferComponent,
+        UpgradeComponent,
+        EventsComponent,
+        TemplateModuleComponent,
+    ],
+    imports: [
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        SharedModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

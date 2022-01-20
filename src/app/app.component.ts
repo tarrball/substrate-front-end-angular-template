@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { filter, take } from 'rxjs';
 
 import { NodeService } from './services/node.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit {
-  public title = 'substrate-angular-template';
+    public initializing = true;
 
-  public constructor(private nodeService: NodeService) {
-  }
+    public constructor(private nodeService: NodeService) {
+    }
 
-  public ngOnInit() {
-    // TODO route guard before gettin other components?
-    this.nodeService.connectToNode();
-    this.nodeService.loadAccounts();
-  }
+    public ngOnInit() {
+        this.nodeService.initialize()
+            .pipe(filter((f) => f?.apiState === 'READY'), take(1))
+            .subscribe(() => this.initializing = false);
+    }
 }
