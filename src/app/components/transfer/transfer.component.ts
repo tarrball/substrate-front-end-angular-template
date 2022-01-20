@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+
 import { NodeService } from 'src/app/services/node.service';
 
 @Component({
@@ -14,6 +15,8 @@ export class TransferComponent {
     amount: ['', [Validators.min(1), Validators.required]]
   });
 
+  public transferStatus = '';
+
   constructor(private nodeService: NodeService, private fb: FormBuilder) { }
 
   // TODO test me
@@ -24,8 +27,8 @@ export class TransferComponent {
 
       // TODO unsub?
       this.nodeService.transfer(amount, toAddress).subscribe({
-        next: result => console.log(result),
-        error: err => console.log(err)
+        next: result => this.transferStatus = result,
+        error: error => this.transferStatus = error
       });
     }
   }

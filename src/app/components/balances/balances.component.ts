@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
+import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { filter, take } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
@@ -21,18 +22,28 @@ export class BalancesComponent implements OnInit {
   public ngOnInit(): void {
     this.nodeService.state$
       .pipe(
-        filter(state => state.apiState === 'READY' && state.api && state.keyring?.getPairs),
+        filter(state => state.apiState === 'READY' && state.api != null && state.keyring != null),
         take(1)
       )
       .subscribe((state) => {
         const { api, keyring } = state;
+
+        // checked in filter and also duplicated errors from node service
+        if (api == null) {
+          throw 'api is null';
+        }
+
+        if (keyring == null) {
+          throw 'keyring is null';
+        }
+
         const accounts = keyring.getPairs();
         const addresses = accounts.map((account: { address: string }) => account.address);
 
         api.query.system.account
-          .multi(addresses, (balances: any) => {
+          .multi(addresses, (balances: FrameSystemAccountInfo[]) => {
             this.accounts = addresses.map((address: string, index: number) =>
-              new Account(address, balances[index].data.free.toHuman(), accounts[index].meta.name));
+              new Account(address, balances[index].data.free.toHuman(), (accounts[index].meta as any).name));
           })
           .catch(console.error);
       });

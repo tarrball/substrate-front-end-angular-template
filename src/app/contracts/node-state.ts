@@ -1,9 +1,11 @@
+import { ApiPromise, Keyring } from "@polkadot/api";
+
 export interface NodeState {
-    socket: string,
-    jsonrpc: any,
-    keyring: any,
-    keyringState: any,
-    api: any,
+    api: ApiPromise | null,
     apiError: any,
     apiState: any,
+    jsonrpc: any,
+    keyring: Keyring | null,
+    keyringState: any,
+    socket: string
 }

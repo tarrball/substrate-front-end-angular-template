@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
@@ -29,22 +30,32 @@ export class AccountSelectorComponent implements OnInit {
   public ngOnInit(): void {
     this.nodeService.state$
       .pipe(
-        filter(state => state.apiState === 'READY' && state.api && state.keyring?.getPairs),
+        filter(state => state.apiState === 'READY' && state.api != null && state.keyring != null),
         take(1)
       )
       .subscribe((state) => {
         // TODO this is basically copy/paste of balances component
         const { api, keyring } = state;
+
+        // checked in filter and also duplicated errors from node service
+        if (api == null) {
+          throw 'api is null';
+        }
+
+        if (keyring == null) {
+          throw 'keyring is null';
+        }
+
         const accounts = keyring.getPairs();
         const addresses = accounts.map((account: { address: string }) => account.address);
 
         api.query.system.account
-          .multi(addresses, (balances: any) => {
+          .multi(addresses, (balances: FrameSystemAccountInfo[]) => {
             this.accounts = addresses.map((address: string, index: number) =>
               new Account(
                 address,
                 balances[index].data.free.toHuman(),
-                accounts[index].meta.name.toUpperCase()));
+                (accounts[index].meta as any).name.toUpperCase()));
 
             // this could be a testable function..
             this.filteredAccounts = this.accountControl.valueChanges.pipe(
@@ -75,6 +86,11 @@ export class AccountSelectorComponent implements OnInit {
     this.selectedAccount = account;
 
     const { api } = this.nodeService.state$.value;
+
+    // duplicated error handling
+    if (api == null) {
+      throw 'api is null';
+    }
 
     // TODO error handling?
     // TODO hide more in substrate service?

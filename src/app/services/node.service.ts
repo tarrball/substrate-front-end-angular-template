@@ -7,7 +7,7 @@ import { keyring } from '@polkadot/ui-keyring';
 
 import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, Observable, take } from 'rxjs';
+import { BehaviorSubject, from, map, Observable, take, throwError } from 'rxjs';
 import { Account } from '../data-contracts/account';
 
 // todo this service needs a lot of cleanup love
@@ -150,33 +150,42 @@ export class NodeService {
     this._selectedAccount$.next(account);
   }
 
+  // todo polkadot.js extension transfers?
   public transfer(amount: number, toAddress: string): Observable<string> {
-    const palletRpc = 'balances';
-    const callable = 'transfer';
+    const state = this.state$.value;
 
-    const status$ = new BehaviorSubject<string>('Sending...');
-    // it's signed (type = 'SIGNED-TX)
-    // todo not doing polkadot.js extension transfers yet
+    if (state.keyring == null) {
+      return throwError(() => 'keyring is null');
+    }
 
-    const params = this.transformParams([true, true], [toAddress, amount]);
-    const txExecute = this.state$.value.api.tx[palletRpc][callable](...params);
+    if (state.api == null) {
+      return throwError(() => 'api is null');
+    }
 
-    // todo assert we have from address?
-    // todo unsub?
-    // todo rx?
-    const keyPair = this.state$.value.keyring.getPair(this._selectedAccount$.value!.address);
+    if (this._selectedAccount$.value == null) {
+      return throwError(() => 'No account is selected');
+    }
+    const keyPair = state.keyring
+      .getPair(this._selectedAccount$.value!.address);
 
-    /*await*/ txExecute.signAndSend(keyPair,
-      (result: any) => {
-        status$.next(result.status.isFinalized ?
-          `😉 Finalized. Block hash: ${result.status.asFinalized.toString()}`
-          : `Current transaction status: ${result.status.type}`)
-      })
-      .catch((err: any) => {
-        status$.next(`😞 Transaction Failed: ${err.toString()}`);
-      });
+    // const unsub = this.state$.value.api.tx.balances
+    return from(state.api.tx.balances
+      .transfer(toAddress, amount)
+      .signAndSend(keyPair)).pipe(map(result => {
+        return 'This is some kind of string'
+      }))
 
-    return status$.asObservable();
+    // /*await*/ txExecute.signAndSend(keyPair,
+    //     (result: any) => {
+    //       status$.next(result.status.isFinalized ?
+    //         `😉 Finalized. Block hash: ${result.status.asFinalized.toString()}`
+    //         : `Current transaction status: ${result.status.type}`)
+    //     })
+    //   .catch((err: any) => {
+    //     status$.next(`😞 Transaction Failed: ${err.toString()}`);
+    //   });
+
+    // return status$.asObservable();
   }
 
   private transformParams(paramFields: any, inputParams: any, opts = { emptyAsNull: true }): any {

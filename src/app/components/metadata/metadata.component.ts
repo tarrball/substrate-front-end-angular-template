@@ -22,10 +22,14 @@ export class MetadataComponent implements OnInit {
         return;
       }
 
+      if (state.api == null) {
+        throw 'api is null';
+      }
+
       const data = await state.api.rpc.state.getMetadata();
 
       this.metadata = JSON.stringify(data, null, 2);
-      this.version = data.version;
+      this.version = data.version.toString();
     })
   }
 

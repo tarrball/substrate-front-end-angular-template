@@ -24,6 +24,10 @@ export class NodeInfoComponent implements OnInit {
       if (state.apiState === 'READY') {
         const { api, socket } = state;
 
+        if (api == null) {
+          throw 'api is null'
+        }
+
         this.socket = socket;
 
         try {
@@ -33,9 +37,9 @@ export class NodeInfoComponent implements OnInit {
             api.rpc.system.version()
           ]);
 
-          this.chain = chain;
-          this.nodeName = nodeName;
-          this.nodeVersion = nodeVersion;
+          this.chain = chain.toString();
+          this.nodeName = nodeName.toString();
+          this.nodeVersion = nodeVersion.toString();
 
         } catch (e) {
           console.error(e);

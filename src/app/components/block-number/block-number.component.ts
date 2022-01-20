@@ -26,6 +26,10 @@ export class BlockNumberComponent implements OnInit {
       if (state.apiState === 'READY') {
         const { api } = state;
 
+        if (api == null) {
+          throw 'api is null'
+        }
+
         const bestNumber: any = this.finalized
           ? api.derive.chain.bestNumberFinalized
           : api.derive.chain.bestNumber;

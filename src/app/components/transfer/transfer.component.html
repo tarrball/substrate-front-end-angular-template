@@ -17,5 +17,5 @@
 
     <button [disabled]="transferForm.invalid" mat-raised-button color="primary" (click)="submit()">Submit</button>
 
-    <!-- TODO - transfer status label -->
+    <label class="status-label" *ngIf="transferStatus">{{transferStatus}}</label>
 </form>
