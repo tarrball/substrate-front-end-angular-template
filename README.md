@@ -2,7 +2,7 @@
 
 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
-Work In Progress - Converting [Substrate Front-End Template](https://github.com/substrate-developer-hub/substrate-front-end-template) from React to Angular with Material Design
+Work In Progress - Converting [Substrate Front-End Template](https://github.com/substrate-developer-hub/substrate-front-end-template) from React to Angular with Material Design & rxjs
 
 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
