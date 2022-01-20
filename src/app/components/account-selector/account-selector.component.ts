@@ -30,12 +30,12 @@ export class AccountSelectorComponent implements OnInit {
   public ngOnInit(): void {
     this.nodeService.state$
       .pipe(
-        filter(state => state.apiState === 'READY' && state.api != null && state.keyring != null),
+        filter(state => state?.apiState === 'READY' && state.api != null && state.keyring != null),
         take(1)
       )
       .subscribe((state) => {
         // TODO this is basically copy/paste of balances component
-        const { api, keyring } = state;
+        const { api, keyring } = state!;
 
         // checked in filter and also duplicated errors from node service
         if (api == null) {
@@ -85,7 +85,7 @@ export class AccountSelectorComponent implements OnInit {
     this.nodeService.selectAccount(account);
     this.selectedAccount = account;
 
-    const { api } = this.nodeService.state$.value;
+    const { api } = this.nodeService.state$.value!; // todo how can we get value without having to ! bang everywhere?
 
     // duplicated error handling
     if (api == null) {

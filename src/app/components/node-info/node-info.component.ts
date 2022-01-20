@@ -21,7 +21,7 @@ export class NodeInfoComponent implements OnInit {
 
   public ngOnInit(): void {
     this.nodeService.state$.subscribe(async (state) => {
-      if (state.apiState === 'READY') {
+      if (state?.apiState === 'READY') {
         const { api, socket } = state;
 
         if (api == null) {

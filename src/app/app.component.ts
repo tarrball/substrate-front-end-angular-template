@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
   public ngOnInit() {
     this.nodeService.initialize()
-      .pipe(filter((f) => f.apiState === 'READY'), take(1))
+      .pipe(filter((f) => f?.apiState === 'READY'), take(1))
       .subscribe(() => this.initializing = false);
   }
 }

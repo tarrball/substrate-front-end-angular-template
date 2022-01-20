@@ -18,7 +18,7 @@ export class MetadataComponent implements OnInit {
 
   public ngOnInit(): void {
     this.nodeService.state$.subscribe(async (state) => {
-      if (state.apiState !== 'READY') {
+      if (state?.apiState !== 'READY') {
         return;
       }
 

@@ -23,7 +23,7 @@ export class BlockNumberComponent implements OnInit {
   public ngOnInit(): void {
     // TODO clean up
     this.nodeService.state$.subscribe((state) => {
-      if (state.apiState === 'READY') {
+      if (state?.apiState === 'READY') {
         const { api } = state;
 
         if (api == null) {

@@ -5,7 +5,7 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { keyring } from '@polkadot/ui-keyring';
 
-import { NodeState } from '../contracts/node-state';
+import { InitializedNodeState, PartialNodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, from, map, Observable, take, throwError } from 'rxjs';
 import { Account } from '../data-contracts/account';
@@ -20,14 +20,16 @@ export class NodeService {
 
   // todo public state obviously not a good idea, but
   // proof of concept
-  public state$ = new BehaviorSubject<NodeState>({
-    socket: environment.providerSocket,
+  public state$ = new BehaviorSubject<InitializedNodeState | null>(null);
+
+  private initialState$ = new BehaviorSubject<PartialNodeState>({
+    api: null,
+    apiError: null,
+    apiState: null,
     jsonrpc: { ...jsonrpc, ...environment.rpc },
     keyring: null,
     keyringState: null,
-    api: null,
-    apiError: null,
-    apiState: null
+    socket: environment.providerSocket
   });
 
   private _selectedAccount$ = new BehaviorSubject<Account | null>(null);
@@ -35,15 +37,16 @@ export class NodeService {
   public get selectedAccount$(): Observable<Account | null> { return this._selectedAccount$.asObservable() };
 
   // should only be callable once
-  public initialize(): Observable<NodeState> {
+  public initialize(): Observable<InitializedNodeState | null> {
     this.connectToNode();
     this.loadAccounts();
 
     return this.state$.asObservable();
   }
 
+  // TODO sometimes (refresh a bunch of times) I get API/INIT: Error: FATAL: Unable to initialize the API: undefined...timing issues?
   private connectToNode() {
-    const { apiState, socket, jsonrpc } = this.state$.value;
+    const { apiState, socket, jsonrpc } = this.initialState$.value;
 
     // We only want this function to be performed once
     if (apiState) {
@@ -65,7 +68,21 @@ export class NodeService {
       });
     });
 
-    api.on('ready', () => this.updateState({ type: 'CONNECT_SUCCESS' }));
+    api.on('ready', () => {
+      const newState = this.reducer(this.initialState$.value, { type: 'CONNECT_SUCCESS' });
+      const { api, keyring } = newState;
+
+      if (api == null) {
+        throw `Node connected successfully but 'api' was null`;
+      }
+
+      if (keyring == null) {
+        throw `Node connected successfully bu 'keyring' was null`;
+      }
+
+      this.state$.next({ ...newState, api: newState.api!, keyring: newState.keyring! });
+    });
+
     api.on('error', err => this.updateState({ type: 'CONNECT_ERROR', payload: err }));
   }
 
@@ -87,7 +104,7 @@ export class NodeService {
       }
     };
 
-    const { keyringState } = this.state$.value;
+    const { keyringState } = this.initialState$.value;
     // If `keyringState` is not null `asyncLoadAccounts` is running.
     if (keyringState) {
       return;
@@ -104,11 +121,11 @@ export class NodeService {
   }
 
   private updateState(action: any) {
-    const newState = this.reducer(this.state$.value, action);
-    this.state$.next(newState);
+    const newState = this.reducer(this.initialState$.value, action);
+    this.initialState$.next(newState);
   }
 
-  private reducer(state: NodeState, action: any) {
+  private reducer(state: PartialNodeState, action: any): PartialNodeState {
     // console.log('-------------------------');
     // console.log('reducer state:');
     // console.log(state);
@@ -152,28 +169,42 @@ export class NodeService {
 
   // todo polkadot.js extension transfers?
   public transfer(amount: number, toAddress: string): Observable<string> {
-    const state = this.state$.value;
-
-    if (state.keyring == null) {
-      return throwError(() => 'keyring is null');
-    }
-
-    if (state.api == null) {
-      return throwError(() => 'api is null');
+    if (this.state$.value == null) {
+      return throwError(() => 'Node state is not initialized')
     }
 
     if (this._selectedAccount$.value == null) {
       return throwError(() => 'No account is selected');
     }
-    const keyPair = state.keyring
-      .getPair(this._selectedAccount$.value!.address);
 
-    // const unsub = this.state$.value.api.tx.balances
-    return from(state.api.tx.balances
-      .transfer(toAddress, amount)
-      .signAndSend(keyPair)).pipe(map(result => {
-        return 'This is some kind of string'
-      }))
+    const { api, keyring } = this.state$.value;
+    const keyPair = keyring.getPair(this._selectedAccount$.value!.address);
+
+    const observable = new Observable<string>((subscriber) => {
+      api.tx.balances
+        .transfer(toAddress, amount)
+        .signAndSend(keyPair, (result) => {
+          subscriber.next(`Current status is ${result.status}`);
+
+          if (result.status.isFinalized) {
+            subscriber.next(`😉 Finalized. Block hash: ${result.status.asFinalized.toString()}`);
+            subscriber.complete();
+          } else {
+            subscriber.next(`Current transaction status: ${result.status.type}`);
+          }
+        }).catch((error: Error) => {
+          subscriber.error(`😞 Transaction Failed: ${error.toString()}`)
+        });
+    })
+
+    return observable;
+
+    // const unsub = this.state$.value.api.tx.balances    
+    // return from(state.api.tx.balances
+    //   .transfer(toAddress, amount)
+    //   .signAndSend(keyPair).pipe(map(result => {
+    //     return 'This is some kind of string'
+    //   }))
 
     // /*await*/ txExecute.signAndSend(keyPair,
     //     (result: any) => {

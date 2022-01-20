@@ -22,11 +22,11 @@ export class BalancesComponent implements OnInit {
   public ngOnInit(): void {
     this.nodeService.state$
       .pipe(
-        filter(state => state.apiState === 'READY' && state.api != null && state.keyring != null),
+        filter(state => state?.apiState === 'READY' && state.api != null && state.keyring != null),
         take(1)
       )
       .subscribe((state) => {
-        const { api, keyring } = state;
+        const { api, keyring } = state!;
 
         // checked in filter and also duplicated errors from node service
         if (api == null) {
