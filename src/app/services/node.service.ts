@@ -92,7 +92,7 @@ export class NodeService {
             }
         };
 
-        const { keyringState } = this.state$.value;
+        // const { keyringState } = this.state$.value;
 
         // If `loadAccts` is true, the `asyncLoadAccounts` has been run once.
         // if (this.loadAccts) {
