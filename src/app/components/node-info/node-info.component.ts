@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { filter, forkJoin, switchMap, take, tap } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 
@@ -20,32 +21,29 @@ export class NodeInfoComponent implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.nodeService.state$.subscribe(async (state) => {
-            if (state?.apiState === 'READY') {
-                const { api, socket } = state;
+        this.nodeService.state$.pipe(
+            filter((f) => !!f),
+            take(1),
+            tap((state) => this.socket = state!.socket),
+            switchMap((state) => {
+                const system = state!.api.rpc.system;
 
-                if (api == null) {
-                    throw 'api is null'
-                }
-
-                this.socket = socket;
-
-                try {
-                    const [chain, nodeName, nodeVersion] = await Promise.all([
-                        api.rpc.system.chain(),
-                        api.rpc.system.name(),
-                        api.rpc.system.version()
-                    ]);
-
-                    this.chain = chain.toString();
-                    this.nodeName = nodeName.toString();
-                    this.nodeVersion = nodeVersion.toString();
-
-                } catch (e) {
-                    console.error(e);
-                }
+                return forkJoin({
+                    chain: system.chain(),
+                    name: system.name(),
+                    version: system.version()
+                })
+            })
+        ).subscribe({
+            next: (result) => {
+                this.chain = result.chain.toString();
+                this.nodeName = result.name.toString();
+                this.nodeVersion = result.version.toString();
+            },
+            error: (error) => {
+                console.error(error);
             }
-        })
+        });
     }
 
 }

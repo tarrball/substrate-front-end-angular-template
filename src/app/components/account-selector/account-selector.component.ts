@@ -30,50 +30,50 @@ export class AccountSelectorComponent implements OnInit {
     public ngOnInit(): void {
         this.nodeService.state$
             .pipe(
-                filter(state => state?.apiState === 'READY' && state.api != null && state.keyring != null),
+                filter((f) => !!f),
                 take(1)
             )
             .subscribe((state) => {
                 // TODO this is basically copy/paste of balances component
                 const { api, keyring } = state!;
 
-                // checked in filter and also duplicated errors from node service
-                if (api == null) {
-                    throw 'api is null';
-                }
-
+                // make non null
                 if (keyring == null) {
-                    throw 'keyring is null';
+                    console.error(keyring);
+                    return;
+                    // throw 'keyring is null';
                 }
 
                 const accounts = keyring.getPairs();
                 const addresses = accounts.map((account: { address: string }) => account.address);
 
                 api.query.system.account
-                    .multi(addresses, (balances: FrameSystemAccountInfo[]) => {
-                        this.accounts = addresses.map((address: string, index: number) =>
-                            new Account(
-                                address,
-                                balances[index].data.free.toHuman(),
-                                (accounts[index].meta as any).name.toUpperCase()));
+                    .multi(addresses).subscribe({
+                        next: (balances) => {
+                            this.accounts = addresses.map((address: string, index: number) =>
+                                new Account(
+                                    address,
+                                    balances[index].data.free.toHuman(),
+                                    (accounts[index].meta as any).name.toUpperCase()));
 
-                        // this could be a testable function..
-                        this.filteredAccounts = this.accountControl.valueChanges.pipe(
-                            startWith(''),
-                            map((value: string | Account) => typeof value === 'string'
-                                ? value
-                                : value.name),
-                            map((name: string) => name
-                                ? this.filter(name)
-                                : this.accounts.slice())
-                        );
+                            // this could be a testable function..
+                            this.filteredAccounts = this.accountControl.valueChanges.pipe(
+                                startWith(''),
+                                map((value: string | Account) => typeof value === 'string'
+                                    ? value
+                                    : value.name),
+                                map((name: string) => name
+                                    ? this.filter(name)
+                                    : this.accounts.slice())
+                            );
 
-                        if (this.accounts[0]) {
-                            this.accountControl.setValue(this.accounts[0]);
-                            this.selectAccount(this.accounts[0]);
-                        }
-                    })
-                    .catch(console.error);
+                            if (this.accounts[0]) {
+                                this.accountControl.setValue(this.accounts[0]);
+                                this.selectAccount(this.accounts[0]);
+                            }
+                        }, 
+                        error: (error) => console.error(error)
+                    });
             })
     }
 
@@ -94,7 +94,7 @@ export class AccountSelectorComponent implements OnInit {
 
         // TODO error handling?
         // TODO hide more in substrate service?
-        api.query.system.account(this.selectedAccount?.address, (balance: any) => {
+        api.query.system.account(this.selectedAccount?.address).subscribe((balance: any) => {
             this.selectedAccountBalance = balance.data.free.toHuman();
         });
     }
