@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
-import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
 import { filter, take } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
@@ -22,17 +21,13 @@ export class BalancesComponent implements OnInit {
     public ngOnInit(): void {
         this.nodeService.state$
             .pipe(
-                filter(state => state?.apiState === 'READY' && state.api != null && state.keyring != null),
+                filter((f) => !!f), take(1),
                 take(1)
             )
             .subscribe((state) => {
                 const { api, keyring } = state!;
 
-                // checked in filter and also duplicated errors from node service
-                if (api == null) {
-                    throw 'api is null';
-                }
-
+                // todo make non null
                 if (keyring == null) {
                     throw 'keyring is null';
                 }
@@ -41,11 +36,13 @@ export class BalancesComponent implements OnInit {
                 const addresses = accounts.map((account: { address: string }) => account.address);
 
                 api.query.system.account
-                    .multi(addresses, (balances: FrameSystemAccountInfo[]) => {
-                        this.accounts = addresses.map((address: string, index: number) =>
-                            new Account(address, balances[index].data.free.toHuman(), (accounts[index].meta as any).name));
-                    })
-                    .catch(console.error);
+                    .multi(addresses).subscribe({
+                        next: (balances) => {
+                            this.accounts = addresses.map((address: string, index: number) =>
+                                new Account(address, balances[index].data.free.toHuman(), (accounts[index].meta as any).name));
+                        },
+                        error: (error) => console.error(error)
+                    });
             });
     }
 

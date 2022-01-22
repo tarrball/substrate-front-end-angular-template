@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { filter, interval, Subscription, take } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 
@@ -12,36 +12,31 @@ export class BlockNumberComponent implements OnInit {
 
   @Input() finalized: boolean = false;
 
-  public blockNumber: number = 0;
+  public blockNumber = '';
 
-  public blockNumberTimer: number = 0;
+  public blockNumberTimer = 0;
 
   private timerSubscription?: Subscription;
 
   constructor(private nodeService: NodeService) { }
 
   public ngOnInit(): void {
-      // TODO clean up
-      this.nodeService.state$.subscribe((state) => {
-          if (state?.apiState === 'READY') {
-              const { api } = state;
+      this.nodeService.state$
+          .pipe(
+              filter((f) => !!f), 
+          )
+          .subscribe((state) => {                
+              const { api } = state!;
 
-              if (api == null) {
-                  throw 'api is null'
-              }
+              const bestNumber = this.finalized
+                  ? api.derive.chain.bestNumberFinalized()
+                  : api.derive.chain.bestNumber();
 
-              const bestNumber: any = this.finalized
-                  ? api.derive.chain.bestNumberFinalized
-                  : api.derive.chain.bestNumber;
-
-              bestNumber((number: any) => {
-                  this.blockNumber = number.toNumber();
+              bestNumber.subscribe(number => {
+                  this.blockNumber = number.toString();
                   this.startNewTimer();
               });
-          } else {
-              console.log('not ready');
-          }
-      });
+          });
   }
 
   private startNewTimer() {

@@ -1,19 +1,9 @@
-import { ApiPromise, Keyring } from "@polkadot/api";
+import { ApiRx } from "@polkadot/api";
+import { Keyring } from "@polkadot/ui-keyring";
 
-interface BaseNodeState {
-    apiError: any,
-    apiState: any,
-    jsonrpc: any,
+export interface NodeState {
+    api: ApiRx,
+    keyring: Keyring | null,
     keyringState: any,
     socket: string
-}
-
-export interface InitializedNodeState extends BaseNodeState {
-    api: ApiPromise,
-    keyring: Keyring
-}
-
-export interface PartialNodeState extends BaseNodeState {
-    api: ApiPromise | null,
-    keyring: Keyring | null,
 }

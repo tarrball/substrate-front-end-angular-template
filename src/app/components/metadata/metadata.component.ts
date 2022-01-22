@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { filter, switchMap, take } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 
@@ -17,20 +18,14 @@ export class MetadataComponent implements OnInit {
     constructor(private nodeService: NodeService, private dialog: MatDialog) { }
 
     public ngOnInit(): void {
-        this.nodeService.state$.subscribe(async (state) => {
-            if (state?.apiState !== 'READY') {
-                return;
-            }
-
-            if (state.api == null) {
-                throw 'api is null';
-            }
-
-            const data = await state.api.rpc.state.getMetadata();
-
-            this.metadata = JSON.stringify(data, null, 2);
-            this.version = data.version.toString();
-        })
+        this.nodeService.state$.pipe(
+            filter((f) => !!f),
+            take(1),
+            switchMap((state) => state!.api.rpc.state.getMetadata())
+        ).subscribe((metadata) => {
+            this.metadata = JSON.stringify(metadata, null, 2);
+            this.version = metadata.version.toString();
+        });
     }
 
     public openDialog(templateRef: TemplateRef<any>) {
