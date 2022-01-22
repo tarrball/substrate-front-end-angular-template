@@ -19,7 +19,8 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "indent": ["error", 4]
+        "indent": ["error", 4], 
+        "quotes": ["error", "single", { "allowTemplateLiterals": true }]
       }
     },
     {
