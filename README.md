@@ -20,7 +20,7 @@ cd substrate-angular-template
 npm install
 ```
 
-### Ussage
+### Usage
 
 You can start the template in development mode to connecct to a locally running node:
 
