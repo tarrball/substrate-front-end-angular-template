@@ -20,7 +20,8 @@
       ],
       "rules": {
         "indent": ["error", 4], 
-        "quotes": ["error", "single", { "allowTemplateLiterals": true }]
+        "quotes": ["error", "single", { "allowTemplateLiterals": true }],
+        "max-len": ["error", { "code": 80 }]
       }
     },
     {

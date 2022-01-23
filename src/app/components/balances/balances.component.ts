@@ -19,7 +19,7 @@ export class BalancesComponent implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.nodeService.state$
+        this.nodeService.nodeState$
             .pipe(
                 filter((f) => !!f), take(1),
                 take(1)
@@ -33,13 +33,20 @@ export class BalancesComponent implements OnInit {
                 }
 
                 const accounts = keyring.getPairs();
-                const addresses = accounts.map((account: { address: string }) => account.address);
+
+                const addresses = accounts
+                    .map((account: { address: string }) => account.address);
 
                 api.query.system.account
-                    .multi(addresses).subscribe({
+                    .multi(addresses)
+                    .subscribe({
                         next: (balances) => {
-                            this.accounts = addresses.map((address: string, index: number) =>
-                                new Account(address, balances[index].data.free.toHuman(), (accounts[index].meta as any).name));
+                            this.accounts = addresses
+                                .map((address: string, index: number) =>
+                                    new Account(
+                                        address,
+                                        balances[index].data.free.toHuman(),
+                                        (accounts[index].meta as any).name));
                         },
                         error: (error) => console.error(error)
                     });

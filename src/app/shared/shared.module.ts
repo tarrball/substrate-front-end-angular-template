@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from './material.module';
-import { PointerLabelComponent } from './components/pointer-label/pointer-label.component';
+import {
+    PointerLabelComponent
+} from './components/pointer-label/pointer-label.component';
 
 @NgModule({
     declarations: [
@@ -12,12 +14,12 @@ import { PointerLabelComponent } from './components/pointer-label/pointer-label.
     imports: [
         CommonModule,
         MaterialModule
-    ], 
+    ],
     exports: [
         CommonModule,
         PointerLabelComponent,
         MaterialModule,
-        ReactiveFormsModule,    
+        ReactiveFormsModule,
     ]
 })
 export class SharedModule { }

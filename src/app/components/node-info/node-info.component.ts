@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { filter, forkJoin, switchMap, take, tap } from 'rxjs';
+import { forkJoin, switchMap, tap } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 
@@ -21,9 +21,7 @@ export class NodeInfoComponent implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.nodeService.state$.pipe(
-            filter((f) => !!f),
-            take(1),
+        this.nodeService.nodeState$.pipe(
             tap((state) => this.socket = state!.socket),
             switchMap((state) => {
                 const system = state!.api.rpc.system;

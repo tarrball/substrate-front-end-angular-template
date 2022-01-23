@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { switchMap } from 'rxjs';
+
+import { NodeService } from 'src/app/services/node.service';
+
+const FILTERED_OUT_EVENT_NAME_PHRASES = [
+    'system:ExtrinsicSuccess::(phase={"applyExtrinsic":0})',
+]
 
 @Component({
     selector: 'app-events',
@@ -6,46 +13,39 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./events.component.sass']
 })
 export class EventsComponent implements OnInit {
-
     public feedItems: FeedItem[] = [];
 
-    constructor() { }
+    constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.feedItems = [{
-            name: 'system:ExtrinsicSuccess',
-            params: '[{"weight":"195,952,000","class":"Normal","paysFee":"Yes"}]'
-        }, {
-            name: 'balances:Transfer',
-            params: '["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy","500,000"]'
-        },{
-            name: 'system:ExtrinsicSuccess',
-            params: '[{"weight":"195,952,000","class":"Normal","paysFee":"Yes"}]'
-        }, {
-            name: 'balances:Transfer',
-            params: '["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy","500,000"]'
-        },{
-            name: 'system:ExtrinsicSuccess',
-            params: '[{"weight":"195,952,000","class":"Normal","paysFee":"Yes"}]'
-        }, {
-            name: 'balances:Transfer',
-            params: '["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy","500,000"]'
-        },{
-            name: 'system:ExtrinsicSuccess',
-            params: '[{"weight":"195,952,000","class":"Normal","paysFee":"Yes"}]'
-        }, {
-            name: 'balances:Transfer',
-            params: '["5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc","5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy","500,000"]'
-        }]
+        this.nodeService.nodeState$
+            .pipe(switchMap(value => value.api.query.system.events()))
+            .subscribe(records => records.map(record => {
+                const { event, phase } = record;
+                const eventHuman = event.toHuman();
+
+                const eventName = `${eventHuman['section']}:` +
+                    `${eventHuman['method']}`;
+
+                const eventNamePhase = `${eventName}::` +
+                    `(phase=${phase.toString()})`;
+
+                const eventParams = JSON.stringify(eventHuman['data']);
+
+                if (!FILTERED_OUT_EVENT_NAME_PHRASES.includes(eventNamePhase)) {
+                    this.feedItems.unshift({ eventName, eventParams })
+                }
+            }));
+
     }
 
-    public clearEventFeed(): void {
+    public clearEventFeed() {
         this.feedItems = [];
     }
 }
 
 interface FeedItem {
-  name: string;
+    eventName: string;
 
-  params: string;
+    eventParams: string;
 }

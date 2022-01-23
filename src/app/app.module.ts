@@ -4,18 +4,26 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BlockNumberComponent } from './components/block-number/block-number.component';
+import {
+    BlockNumberComponent
+} from './components/block-number/block-number.component';
 import { SharedModule } from './shared/shared.module';
 import { MetadataComponent } from './components/metadata/metadata.component';
 import { NodeInfoComponent } from './components/node-info/node-info.component';
 import { BalancesComponent } from './components/balances/balances.component';
 import { HeaderComponent } from './components/header/header.component';
-import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
+import {
+    AccountSelectorComponent
+} from './components/account-selector/account-selector.component';
 import { TransferComponent } from './components/transfer/transfer.component';
-import { InteractorComponent } from './components/interactor/interactor.component';
+import {
+    InteractorComponent
+} from './components/interactor/interactor.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { EventsComponent } from './components/events/events.component';
-import { TemplateModuleComponent } from './components/template-module/template-module.component';
+import {
+    TemplateModuleComponent
+} from './components/template-module/template-module.component';
 
 @NgModule({
     declarations: [
