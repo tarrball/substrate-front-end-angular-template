@@ -6,4 +6,4 @@ Work In Progress - Converting [Substrate Front-End Template](https://github.com/
 
 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
-Currently, there are several components copied over (Account Selector, Balances, Block Number, Metadata, Node Info), but there are lots of TODO's sprinkled throughout, and duplicated code here and there.
+Currently, there are several working components (Account Selector, Balances, Block Number, Events, Metadata, Node Info, Transfer), but there are lots of TODO's sprinkled throughout, and duplicated code here and there.
