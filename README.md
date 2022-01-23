@@ -1,4 +1,4 @@
-# Substrate Front End TemplateTemplate
+# Substrate Front End Angular Template
 
 ![demo](https://user-images.githubusercontent.com/5394797/150664404-9d39b439-dc7e-4e06-9e20-017538cde6e9.png)
 
