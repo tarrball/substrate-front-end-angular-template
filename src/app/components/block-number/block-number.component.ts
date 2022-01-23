@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { filter, interval, Subscription, take } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 
@@ -21,10 +21,7 @@ export class BlockNumberComponent implements OnInit {
   constructor(private nodeService: NodeService) { }
 
   public ngOnInit(): void {
-      this.nodeService.state$
-          .pipe(
-              filter((f) => !!f), 
-          )
+      this.nodeService.nodeState$
           .subscribe((state) => {                
               const { api } = state!;
 

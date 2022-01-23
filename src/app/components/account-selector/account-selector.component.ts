@@ -28,7 +28,7 @@ export class AccountSelectorComponent implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.nodeService.state$
+        this.nodeService.nodeState$
             .pipe(
                 filter((f) => !!f),
                 take(1)
@@ -45,33 +45,39 @@ export class AccountSelectorComponent implements OnInit {
                 }
 
                 const accounts = keyring.getPairs();
-                const addresses = accounts.map((account: { address: string }) => account.address);
+
+                const addresses = accounts
+                    .map((account: { address: string }) => account.address);
 
                 api.query.system.account
                     .multi(addresses).subscribe({
                         next: (balances) => {
-                            this.accounts = addresses.map((address: string, index: number) =>
-                                new Account(
-                                    address,
-                                    balances[index].data.free.toHuman(),
-                                    (accounts[index].meta as any).name.toUpperCase()));
+                            this.accounts = addresses
+                                .map((address: string, index: number) =>
+                                    new Account(
+                                        address,
+                                        balances[index].data.free.toHuman(),
+                                        (accounts[index].meta as any).name
+                                            .toUpperCase()));
 
                             // this could be a testable function..
-                            this.filteredAccounts = this.accountControl.valueChanges.pipe(
-                                startWith(''),
-                                map((value: string | Account) => typeof value === 'string'
-                                    ? value
-                                    : value.name),
-                                map((name: string) => name
-                                    ? this.filter(name)
-                                    : this.accounts.slice())
-                            );
+                            this.filteredAccounts = this.accountControl
+                                .valueChanges.pipe(
+                                    startWith(''),
+                                    map((value: string | Account) =>
+                                        typeof value === 'string'
+                                            ? value
+                                            : value.name),
+                                    map((name: string) => name
+                                        ? this.filter(name)
+                                        : this.accounts.slice())
+                                );
 
                             if (this.accounts[0]) {
                                 this.accountControl.setValue(this.accounts[0]);
                                 this.selectAccount(this.accounts[0]);
                             }
-                        }, 
+                        },
                         error: (error) => console.error(error)
                     });
             })
@@ -85,17 +91,17 @@ export class AccountSelectorComponent implements OnInit {
         this.nodeService.selectAccount(account);
         this.selectedAccount = account;
 
-        const { api } = this.nodeService.state$.value!; // todo how can we get value without having to ! bang everywhere?
+        // todo how can we get value without having to ! bang everywhere?
+        this.nodeService.nodeState$.subscribe((state) => {
+            const { api } = state;
 
-        // duplicated error handling
-        if (api == null) {
-            throw 'api is null';
-        }
-
-        // TODO error handling?
-        // TODO hide more in substrate service?
-        api.query.system.account(this.selectedAccount?.address).subscribe((balance: any) => {
-            this.selectedAccountBalance = balance.data.free.toHuman();
+            // TODO error handling?
+            // TODO hide more in substrate service?
+            api.query.system
+                .account(this.selectedAccount?.address)
+                .subscribe((balance: any) => {
+                    this.selectedAccountBalance = balance.data.free.toHuman();
+                });
         });
     }
 
@@ -103,7 +109,9 @@ export class AccountSelectorComponent implements OnInit {
         const filterValue = value.toLowerCase();
 
         return this.accounts
-            .filter(account => account.name.toLowerCase().includes(filterValue));
+            .filter(account => account.name
+                .toLowerCase()
+                .includes(filterValue));
     }
 
     public clear(event: Event, trigger: MatAutocompleteTrigger) {

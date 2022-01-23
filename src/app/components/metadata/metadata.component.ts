@@ -18,9 +18,7 @@ export class MetadataComponent implements OnInit {
     constructor(private nodeService: NodeService, private dialog: MatDialog) { }
 
     public ngOnInit(): void {
-        this.nodeService.state$.pipe(
-            filter((f) => !!f),
-            take(1),
+        this.nodeService.nodeState$.pipe(
             switchMap((state) => state!.api.rpc.state.getMetadata())
         ).subscribe((metadata) => {
             this.metadata = JSON.stringify(metadata, null, 2);

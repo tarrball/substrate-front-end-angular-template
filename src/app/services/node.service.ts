@@ -3,7 +3,7 @@ import { ApiRx, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { keyring } from '@polkadot/ui-keyring';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, throwError } from 'rxjs';
 
 import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
@@ -17,25 +17,26 @@ export class NodeService {
 
     private loadAccts = false;
 
-    // todo public state obviously not a good idea, but
-    // proof of concept
-    public state$ = new BehaviorSubject<NodeState | null>(null);
+    private _nodeState$ = new BehaviorSubject<NodeState | null>(null);
 
-    private _selectedAccount$ = new BehaviorSubject<Account | null>(null);
+    private selectedAccount: Account | null = null;
 
-    public get selectedAccount$(): Observable<Account | null> { return this._selectedAccount$.asObservable() };
+    public get nodeState$(): Observable<NodeState> {
+        return this._nodeState$.pipe(filter(f => !!f), map((m) => m!));
+    };
 
-    // should only be callable once
+    // TODO should only be callable once
     public initialize(): Observable<NodeState | null> {
-        this.connectToNode();        
+        this.connectToNode();
 
-        return this.state$.asObservable();
+        return this.nodeState$;
     }
 
-    // TODO sometimes (refresh a bunch of times) I get API/INIT: Error: FATAL: Unable to initialize the API: undefined...timing issues?
+    // TODO sometimes (refresh a bunch of times) I get API/INIT: Error: 
+    // FATAL: Unable to initialize the API: undefined...timing issues?
     private connectToNode() {
         // TODO this should be sub, not state
-        if (this.state$.value) {
+        if (this._nodeState$.value) {
             throw 'Node is already connected';
         }
 
@@ -44,17 +45,17 @@ export class NodeService {
 
         // todo keep subscription alive and don't let it recreated
         ApiRx.create({ provider, rpc }).subscribe({
-            next: api => {               
+            next: api => {
                 // todo give this a function handler                 
-                if (api.isConnected && !api.isReady) {                    
+                if (api.isConnected && !api.isReady) {
                     console.log('Connected!');
                 }
 
                 if (api.isConnected && api.isReady) {
-                    console.log('Is Ready!');   
-                    
-                    this.state$.next({
-                        api,  
+                    console.log('Is Ready!');
+
+                    this._nodeState$.next({
+                        api,
                         keyring: null,
                         keyringState: null,
                         socket: environment.providerSocket
@@ -72,7 +73,7 @@ export class NodeService {
 
     private loadAccounts() {
         // TODO need to not do this again if it's been called already        
-        if (this.state$.value == null) {
+        if (this._nodeState$.value == null) {
             throw 'Node is not connected';
         }
 
@@ -80,13 +81,20 @@ export class NodeService {
             try {
                 await web3Enable(environment.appName);
                 let allAccounts = await web3Accounts();
-                
-                allAccounts = allAccounts.map(({ address, meta }) =>
-                    ({ address, meta: { ...meta, name: `${meta.name} (${meta.source})` } }));
 
-                keyring.loadAll({ isDevelopment: environment.developmentKeyring }, allAccounts);
+                allAccounts = allAccounts.map(({ address, meta }) => ({
+                    address,
+                    meta: {
+                        ...meta,
+                        name: `${meta.name} (${meta.source})`
+                    }
+                }));
 
-                this.state$.next({ ...this.state$.value!, keyring });
+                keyring.loadAll({
+                    isDevelopment: environment.developmentKeyring
+                }, allAccounts);
+
+                this._nodeState$.next({ ...this._nodeState$.value!, keyring });
             } catch (e) {
                 console.error(e);
             }
@@ -105,26 +113,26 @@ export class NodeService {
     }
 
     public selectAccount(account: Account) {
-        this._selectedAccount$.next(account);
+        this.selectedAccount = account;
     }
 
     // todo polkadot.js extension transfers?
     public transfer(amount: number, toAddress: string): Observable<string> {
-        if (this.state$.value == null) {
+        if (this._nodeState$.value == null) {
             return throwError(() => 'Node state is not initialized')
         }
 
-        if (this._selectedAccount$.value == null) {
+        if (this.selectedAccount == null) {
             return throwError(() => 'No account is selected');
         }
 
-        const { api, keyring } = this.state$.value;
+        const { api, keyring } = this._nodeState$.value;
 
         if (keyring == null) {
             return throwError(() => 'Keyring is null');
         }
 
-        const keyPair = keyring.getPair(this._selectedAccount$.value!.address);
+        const keyPair = keyring.getPair(this.selectedAccount.address);
 
         const observable = new Observable<string>((subscriber) => {
             api.tx.balances
@@ -133,15 +141,19 @@ export class NodeService {
                 .subscribe({
                     next: result => {
                         if (result.status.isFinalized) {
-                            subscriber.next(`😉 Finalized. Block hash: ${result.status.asFinalized.toString()}`);
+                            subscriber.next(`😉 Finalized. Block hash: ` +
+                                `${result.status.asFinalized.toString()}`);
+
                             subscriber.complete();
                         } else {
-                            subscriber.next(`Current transaction status: ${result.status.type}`);
+                            subscriber.next(`Current transaction status: ` +
+                                `${result.status.type}`);
                         }
                     },
                     error: error => {
                         console.error(error);
-                        subscriber.error(`😞 Transaction Failed: ${error.toString()}`)
+                        subscriber.error(`😞 Transaction Failed: ` +
+                            `${error.toString()}`)
                     }
                 });
         })
