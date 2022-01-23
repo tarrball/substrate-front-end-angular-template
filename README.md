@@ -12,7 +12,7 @@ Currently, there are several working components (Account Selector, Balances, Blo
 
 ### Installation
 
-The codebase is installed using `git` and the [Angular CLI](https://angular.io/cli). This tutorial assumes you have installed the Angular CLI globally.
+The codebase is installed using [git](https://git-scm.com/) and the [Angular CLI](https://angular.io/cli). This tutorial assumes you have installed git and the Angular CLI.
 
 ```sh
 git clone https://github.com/tarrball/substrate-angular-template.git
