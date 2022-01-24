@@ -1,21 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-interactor',
     templateUrl: './interactor.component.html',
     styleUrls: ['./interactor.component.sass']
 })
-export class InteractorComponent implements OnInit {
+export class InteractorComponent {
 
     public signedDisabled = false;
 
     public sudoDisabled = false;
 
     public unsignedDisabled = false;
-
-    constructor() { }
-
-    public ngOnInit(): void {
-        console.log('InteractorComponent ngOnInit');
-    }
 }

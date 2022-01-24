@@ -3,7 +3,6 @@ import { Keyring } from '@polkadot/ui-keyring';
 
 export interface NodeState {
     api: ApiRx,
-    keyring: Keyring | null,
-    keyringState: any,
+    keyring: Keyring
     socket: string
 }

@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
-import { EMPTY, filter, map, Observable, startWith, take } from 'rxjs';
+import { EMPTY, map, Observable, startWith } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
 import { NodeService } from 'src/app/services/node.service';
 
-// TODO still needs the "no account selected functionality"
 @Component({
     selector: 'app-account-selector',
     templateUrl: './account-selector.component.html',
@@ -21,31 +19,15 @@ export class AccountSelectorComponent implements OnInit {
 
     public selectedAccount?: Account;
 
-    public selectedAccountBalance?: string;
-
     public filteredAccounts: Observable<Account[]> = EMPTY;
 
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
         this.nodeService.nodeState$
-            .pipe(
-                filter((f) => !!f),
-                take(1)
-            )
             .subscribe((state) => {
-                // TODO this is basically copy/paste of balances component
-                const { api, keyring } = state!;
-
-                // make non null
-                if (keyring == null) {
-                    console.error(keyring);
-                    return;
-                    // throw 'keyring is null';
-                }
-
+                const { api, keyring } = state
                 const accounts = keyring.getPairs();
-
                 const addresses = accounts
                     .map((account: { address: string }) => account.address);
 
@@ -60,7 +42,6 @@ export class AccountSelectorComponent implements OnInit {
                                         (accounts[index].meta as any).name
                                             .toUpperCase()));
 
-                            // this could be a testable function..
                             this.filteredAccounts = this.accountControl
                                 .valueChanges.pipe(
                                     startWith(''),
@@ -78,7 +59,7 @@ export class AccountSelectorComponent implements OnInit {
                                 this.selectAccount(this.accounts[0]);
                             }
                         },
-                        error: (error) => console.error(error)
+                        error: console.error
                     });
             })
     }
@@ -90,19 +71,6 @@ export class AccountSelectorComponent implements OnInit {
     public selectAccount(account: Account) {
         this.nodeService.selectAccount(account);
         this.selectedAccount = account;
-
-        // todo how can we get value without having to ! bang everywhere?
-        this.nodeService.nodeState$.subscribe((state) => {
-            const { api } = state;
-
-            // TODO error handling?
-            // TODO hide more in substrate service?
-            api.query.system
-                .account(this.selectedAccount?.address)
-                .subscribe((balance: any) => {
-                    this.selectedAccountBalance = balance.data.free.toHuman();
-                });
-        });
     }
 
     private filter(value: string): Account[] {

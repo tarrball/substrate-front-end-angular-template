@@ -1,27 +1,24 @@
-<div *ngIf="initializing; else main" class="spinner-container">
-    <mat-spinner></mat-spinner>
+<div *ngIf="isConnected; else spinner">
+    <app-header></app-header>
+
+    <div class="block-header-row">
+        <app-node-info></app-node-info>
+        <app-metadata></app-metadata>
+        <app-block-number></app-block-number>
+        <app-block-number [finalized]="true"></app-block-number>
+    </div>
+
+    <app-balances></app-balances>
+
+    <div class="components">
+        <app-transfer></app-transfer>
+        <app-upgrade></app-upgrade>
+        <app-interactor></app-interactor>
+        <app-events></app-events>
+    </div>
 </div>
-<ng-template #main>
-    <div>
-        <app-header></app-header>
-
-        <div class="block-header-row">
-            <app-node-info></app-node-info>
-            <app-metadata></app-metadata>
-            <app-block-number></app-block-number>
-            <app-block-number [finalized]="true"></app-block-number>
-        </div>
-
-        <app-balances></app-balances>
-
-        <div class="components">
-            <app-transfer></app-transfer>
-            <app-upgrade></app-upgrade>
-            <app-interactor></app-interactor>
-            <app-events></app-events>
-
-            <!-- TODO: Custom Template Module Stuff -->
-            <!-- <app-template-module></app-template-module> -->
-        </div>
+<ng-template #spinner>
+    <div class="spinner-container">
+        <mat-spinner></mat-spinner>
     </div>
 </ng-template>

@@ -19,13 +19,11 @@ export class TransferComponent {
 
     constructor(private nodeService: NodeService, private fb: FormBuilder) { }
 
-    // TODO test me
     public submit() {
         if (this.transferForm.valid) {
             const amount = this.transferForm.get('amount')!.value;
             const toAddress = this.transferForm.get('toAddress')!.value;
 
-            // TODO unsub?
             this.nodeService.transfer(amount, toAddress).subscribe({
                 next: result => this.transferStatus = result,
                 error: error => this.transferStatus = error

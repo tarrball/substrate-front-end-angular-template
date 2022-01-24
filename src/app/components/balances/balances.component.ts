@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
-import { filter, take } from 'rxjs';
 
 import { Account } from 'src/app/data-contracts/account';
 import { NodeService } from 'src/app/services/node.service';
@@ -20,18 +19,8 @@ export class BalancesComponent implements OnInit {
 
     public ngOnInit(): void {
         this.nodeService.nodeState$
-            .pipe(
-                filter((f) => !!f), take(1),
-                take(1)
-            )
             .subscribe((state) => {
-                const { api, keyring } = state!;
-
-                // todo make non null
-                if (keyring == null) {
-                    throw 'keyring is null';
-                }
-
+                const { api, keyring } = state;
                 const accounts = keyring.getPairs();
 
                 const addresses = accounts
