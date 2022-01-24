@@ -19,6 +19,9 @@ import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
 import { Account } from '../data-contracts/account';
 
+const NO_ACCOUNT_SELECTED_MESSAGE = 'No account is selected.';
+const NOT_CONNECTED_MESSAGE = 'App is not connected to node.';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -32,7 +35,7 @@ export class NodeService {
 
     public get nodeState$(): Observable<NodeState> {
         if (!this._nodeState$) {
-            return throwError(() => 'Node is not connected');
+            return throwError(() => NOT_CONNECTED_MESSAGE);
         }
 
         return this._nodeState$.pipe(filter(f => !!f), map((m) => m!));
@@ -40,23 +43,23 @@ export class NodeService {
 
     public connectToNode(): Observable<NodeState> {
         if (this.connectionSubscription != null) {
-            console.error('Attmpted to initialize node multiple times.');
+            return throwError(() =>
+                'Attempted to initialize node multiple times.');
         }
 
-        this.connectionSubscription ??= this.createApiObservable()
+        const apiOptions = {
+            provider: new WsProvider(environment.providerSocket),
+            rpc: { ...jsonrpc, ...environment.rpc }
+        };
+
+        this.connectionSubscription = ApiRx
+            .create(apiOptions)
             .subscribe({
                 next: api => this.loadAccountsIfReady(api),
                 error: console.error,
             });
 
         return this.nodeState$;
-    }
-
-    private createApiObservable(): Observable<ApiRx> {
-        const provider = new WsProvider(environment.providerSocket);
-        const rpc = { ...jsonrpc, ...environment.rpc };
-
-        return ApiRx.create({ provider, rpc });
     }
 
     private loadAccountsIfReady(api: ApiRx) {
@@ -99,19 +102,14 @@ export class NodeService {
     // todo polkadot.js extension transfers?
     public transfer(amount: number, toAddress: string): Observable<string> {
         if (this._nodeState$.value == null) {
-            return throwError(() => 'Node state is not initialized')
+            return throwError(() => NOT_CONNECTED_MESSAGE);
         }
 
         if (this.selectedAccount == null) {
-            return throwError(() => 'No account is selected');
+            return throwError(() => NO_ACCOUNT_SELECTED_MESSAGE);
         }
 
         const { api, keyring } = this._nodeState$.value;
-
-        if (keyring == null) {
-            return throwError(() => 'Keyring is null');
-        }
-
         const keyPair = keyring.getPair(this.selectedAccount.address);
 
         const observable = new Observable<string>((subscriber) => {
