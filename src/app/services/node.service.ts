@@ -99,7 +99,6 @@ export class NodeService {
         this.selectedAccount = account;
     }
 
-    // todo polkadot.js extension transfers?
     public transfer(amount: number, toAddress: string): Observable<string> {
         if (this._nodeState$.value == null) {
             return throwError(() => NOT_CONNECTED_MESSAGE);
