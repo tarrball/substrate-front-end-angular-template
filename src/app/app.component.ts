@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { filter, take } from 'rxjs';
 
 import { NodeService } from './services/node.service';
 
@@ -9,14 +8,24 @@ import { NodeService } from './services/node.service';
     styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit {
-    public initializing = true;
+    public isConnected = false;
 
     public constructor(private nodeService: NodeService) {
     }
 
     public ngOnInit() {
-        this.nodeService.initialize()
-            .pipe(filter((f) => !!f), take(1))
-            .subscribe(() => this.initializing = false);
+        this.connectToNode();
+    }
+
+    private connectToNode() {
+        this.nodeService
+            .connectToNode()
+            .subscribe({
+                next: () => this.isConnected = true,
+                error: (error) => {
+                    this.isConnected = false;
+                    console.error(error);
+                }
+            });
     }
 }
