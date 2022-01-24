@@ -38,9 +38,7 @@ export class NodeInfoComponent implements OnInit {
                 this.nodeName = result.name.toString();
                 this.nodeVersion = result.version.toString();
             },
-            error: (error) => {
-                console.error(error);
-            }
+            error: console.error
         });
     }
 

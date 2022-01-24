@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, switchMap, take } from 'rxjs';
+import { switchMap } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 

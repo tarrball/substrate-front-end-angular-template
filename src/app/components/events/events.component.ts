@@ -19,7 +19,7 @@ export class EventsComponent implements OnInit {
 
     public ngOnInit(): void {
         this.nodeService.nodeState$
-            .pipe(switchMap(value => value.api.query.system.events()))
+            .pipe(switchMap(state => state.api.query.system.events()))
             .subscribe(records => records.map(record => {
                 const { event, phase } = record;
                 const eventHuman = event.toHuman();
