@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
+import { KeyringPair } from '@polkadot/keyring/types';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { keyring } from '@polkadot/ui-keyring';
 import {
@@ -93,6 +94,31 @@ export class NodeService {
         keyring.loadAll({
             isDevelopment: environment.developmentKeyring
         }, mappedAccounts);
+    }
+
+    public getAccounts(): Observable<Account[]> {
+        if (!this._nodeState$ || this._nodeState$.value == null) {
+            return throwError(() => NOT_CONNECTED_MESSAGE);
+        }
+
+        const { api, keyring } = this._nodeState$.value
+        const keypairs = keyring.getPairs();
+        const addresses = this.getAddresses(keypairs);
+
+        return api.query.system.account
+            .multi(addresses)
+            .pipe(map((accounts) =>
+                addresses.map((address, i) => new Account(
+                    address,
+                    accounts[i],
+                    keypairs[i]
+                ))
+            ))
+    }
+
+    private getAddresses(keyringPairs: KeyringPair[]): string[] {
+        return keyringPairs.map((account: { address: string }) =>
+            account.address);
     }
 
     public selectAccount(account: Account) {

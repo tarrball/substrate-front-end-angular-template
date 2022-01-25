@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { BlockNumber } from '@polkadot/types/interfaces';
+import { interval, Subscription, switchMap } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
 
@@ -10,41 +11,40 @@ import { NodeService } from 'src/app/services/node.service';
 })
 export class BlockNumberComponent implements OnInit {
 
-  @Input() finalized: boolean = false;
+    @Input() finalized: boolean = false;
 
-  public blockNumber = '';
+    public blockNumber = '';
 
-  public blockNumberTimer = 0;
+    public blockNumberTimer = 0;
 
-  private timerSubscription?: Subscription;
+    private timerSubscription?: Subscription;
 
-  constructor(private nodeService: NodeService) { }
+    constructor(private nodeService: NodeService) { }
 
-  public ngOnInit(): void {
-      this.nodeService.nodeState$
-          .subscribe((state) => {                
-              const { api } = state!;
+    public ngOnInit(): void {
+        this.nodeService.nodeState$
+            .pipe(
+                switchMap(({ api }) => this.finalized
+                    ? api.derive.chain.bestNumberFinalized()
+                    : api.derive.chain.bestNumber())
+            )
+            .subscribe((number) => this.setNewBestNumber(number));
+    }
 
-              const bestNumber = this.finalized
-                  ? api.derive.chain.bestNumberFinalized()
-                  : api.derive.chain.bestNumber();
+    private setNewBestNumber(blockNumber: BlockNumber) {
+        this.blockNumber = blockNumber.toString();
+        this.startNewTimer();
+    }
 
-              bestNumber.subscribe(number => {
-                  this.blockNumber = number.toString();
-                  this.startNewTimer();
-              });
-          });
-  }
+    private startNewTimer() {
+        this.resetTimer();
 
-  private startNewTimer() {
-      this.resetTimer();
+        this.timerSubscription = interval(1000)
+            .subscribe((seconds) => this.blockNumberTimer = seconds);
+    }
 
-      this.timerSubscription = interval(1000)
-          .subscribe((seconds) => this.blockNumberTimer = seconds);
-  }
-
-  private resetTimer() {
-      this.timerSubscription?.unsubscribe();
-      this.blockNumberTimer = 0;
-  }
+    private resetTimer() {
+        this.timerSubscription?.unsubscribe();
+        this.blockNumberTimer = 0;
+    }
 }
