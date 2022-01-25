@@ -48,11 +48,11 @@ export class AccountSelectorComponent implements OnInit {
                 ? value
                 : value.name),
             map((name: string) => name
-                ? this.accounts.slice()
-                : this.accounts
+                ? this.accounts
                     .filter(account => account.name
                         .toLowerCase()
                         .includes(name.toLowerCase()))
+                : this.accounts.slice()
             ));
     }
 
