@@ -2,13 +2,10 @@ import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'shared-pointer-label',
-    template: `    
-      <mat-icon>double_arrow</mat-icon>
-      <label>{{text}}</label>
-  `,
+    templateUrl: 'pointer-label.component.html',
     styleUrls: ['./pointer-label.component.sass']
 })
-export class PointerLabelComponent{
+export class PointerLabelComponent {
 
-  @Input() public text: string = '';
+    @Input() public text: string = '';
 }

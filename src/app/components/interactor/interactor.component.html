@@ -2,7 +2,9 @@
 
 <div class="input-container">
     <h3>Interaction Type</h3>
-    <mat-button-toggle-group name="iteractionType" aria-name="Interation Type">
+
+    <mat-button-toggle-group name="iteractionType"
+                             aria-name="Interation Type">
         <mat-button-toggle value="extrinsic">Extrinsic</mat-button-toggle>
         <mat-button-toggle value="query">Query</mat-button-toggle>
         <mat-button-toggle value="rpc">RPC</mat-button-toggle>
@@ -27,11 +29,22 @@
 </div>
 
 <div class="btn-container">
-    <button mat-raised-button [disabled]="unsignedDisabled">Unsigned</button>
+    <button mat-raised-button
+            [disabled]="unsignedDisabled">
+        Unsigned
+    </button>
     <label>or</label>
-    <button mat-raised-button [disabled]="signedDisabled" color="primary">Signed</button>
+    <button mat-raised-button
+            color="primary"
+            [disabled]="signedDisabled">
+        Signed
+    </button>
     <label>or</label>
-    <button mat-raised-button [disabled]="sudoDisabled" color="warn">SUDO</button>
+    <button mat-raised-button
+            color="warn"
+            [disabled]="sudoDisabled">
+        SUDO
+    </button>
 </div>
 
 <!-- TODO - status label -->

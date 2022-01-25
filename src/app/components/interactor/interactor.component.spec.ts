@@ -8,7 +8,7 @@ describe('InteractorComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ InteractorComponent ]
+            declarations: [InteractorComponent]
         })
             .compileComponents();
     });

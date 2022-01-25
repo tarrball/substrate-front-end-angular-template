@@ -8,7 +8,7 @@ describe('PointerLabelComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ PointerLabelComponent ]
+            declarations: [PointerLabelComponent]
         })
             .compileComponents();
     });
