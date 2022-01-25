@@ -29,8 +29,8 @@ export class TransferComponent {
         this.nodeService
             .transfer(amount, toAddress)
             .subscribe({
-                next: this.updateStatus,
-                error: this.updateStatus
+                next: (status) => this.updateStatus(status),
+                error: (error) => this.updateStatus(error)
             });
     }
 
