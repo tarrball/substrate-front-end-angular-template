@@ -1,32 +1,55 @@
 <h1>Balances</h1>
 
-<table mat-table [dataSource]="accounts">
+<table mat-table
+       [dataSource]="accounts">
     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef><strong>Name</strong></th>
-        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+        <th *matHeaderCellDef
+            mat-header-cell>
+            <strong>Name</strong>
+        </th>
+        <td *matCellDef="let element"
+            mat-cell>{{element.name}}
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="address">
-        <th mat-header-cell *matHeaderCellDef><strong>Address</strong></th>
-        <td mat-cell *matCellDef="let element">
+        <th *matHeaderCellDef
+            mat-header-cell>
+            <strong>Address</strong>
+        </th>
+        <td *matCellDef="let element"
+            mat-cell>
             <span class="address">{{element.address}}</span>
-            <button mat-icon-button aria-label="Copy address button" class="btn-copy"
-                #tooltip="matTooltip"
-                matTooltip="Copied!"
-                matTooltipDisabled="true"
-                matTooltipPosition="right"
-                [cdkCopyToClipboard]="element.address"
-                (click)="show(tooltip)">
+            <button #tooltip="matTooltip"
+                    mat-icon-button
+                    aria-label="Copy address button"
+                    class="btn-copy"
+                    matTooltip="Copied!"
+                    matTooltipDisabled="true"
+                    matTooltipPosition="right"
+                    [cdkCopyToClipboard]="element.address"
+                    (click)="show(tooltip)">
                 <mat-icon>content_copy</mat-icon>
             </button>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="balance">
-        <th mat-header-cell *matHeaderCellDef><strong>Balance</strong></th>
-        <td mat-cell *matCellDef="let element">{{element.balance}}</td>
+        <th *matHeaderCellDef
+            mat-header-cell>
+            <strong>Balance</strong>
+        </th>
+        <td *matCellDef="let element"
+            mat-cell>{{element.balance}}
+        </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns; let even = even" [class.even]="even"></tr>
+    <tr *matHeaderRowDef="displayedColumns"
+        mat-header-row>
+    </tr>
+
+    <tr *matRowDef="let row; columns: displayedColumns; let even = even"
+        mat-row
+        [class.even]="even">
+    </tr>
 </table>

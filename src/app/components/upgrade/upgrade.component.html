@@ -5,8 +5,11 @@
         <div>
             <label>Wasm File</label>
         </div>
-        <input type="file" accept=".wasm" (change)="handleFileChosen($event)">
+        <input type="file"
+               accept=".wasm"
+               (change)="handleFileChosen($event)">
     </div>
 
-    <button mat-raised-button color="primary">Upgrade</button>
+    <button mat-raised-button
+            color="primary">Upgrade</button>
 </div>

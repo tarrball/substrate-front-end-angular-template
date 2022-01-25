@@ -25,7 +25,9 @@
     <button mat-raised-button
             color="primary"
             [disabled]="transferForm.invalid"
-            (click)="submit()">Submit</button>
+            (click)="submit()">
+        Submit
+    </button>
 
     <label *ngIf="transferStatus"
            class="status-label">{{transferStatus}}</label>

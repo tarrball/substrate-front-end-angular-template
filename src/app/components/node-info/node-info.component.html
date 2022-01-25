@@ -1,14 +1,17 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>{{nodeName}}</mat-card-title>
-    <mat-card-subtitle>{{chain}}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    {{socket}}
-  </mat-card-content>
-  <mat-divider></mat-divider>
-  <mat-card-footer>
-    <mat-icon aria-hidden="false" aria-label="Gear icon">settings</mat-icon>
-    {{nodeVersion}}
-  </mat-card-footer>
+    <mat-card-header>
+        <mat-card-title>{{nodeName}}</mat-card-title>
+        <mat-card-subtitle>{{chain}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        {{socket}}
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-footer>
+        <mat-icon aria-hidden="false"
+                  aria-label="Gear icon">
+            settings
+        </mat-icon>
+        {{nodeVersion}}
+    </mat-card-footer>
 </mat-card>

@@ -6,7 +6,11 @@
     <mat-card-content></mat-card-content>
     <mat-divider></mat-divider>
     <mat-card-footer>
-        <button mat-raised-button color="primary" (click)="openDialog(metadataDialog)">Show Metadata</button>
+        <button mat-raised-button
+                color="primary"
+                (click)="openDialog(metadataDialog)">
+            Show Metadata
+        </button>
     </mat-card-footer>
 </mat-card>
 
@@ -17,6 +21,9 @@
         <pre><code>{{metadata}}</code></pre>
     </div>
     <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Close</button>
-      </mat-dialog-actions>
+        <button mat-button
+                mat-dialog-close>
+            Close
+        </button>
+    </mat-dialog-actions>
 </ng-template>
