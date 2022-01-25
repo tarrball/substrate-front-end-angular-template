@@ -18,6 +18,7 @@ import {
 import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
 import { Account } from '../data-contracts/account';
+import { KeyringPair } from '@polkadot/keyring/types';
 
 const NO_ACCOUNT_SELECTED_MESSAGE = 'No account is selected.';
 const NOT_CONNECTED_MESSAGE = 'App is not connected to node.';
@@ -93,6 +94,31 @@ export class NodeService {
         keyring.loadAll({
             isDevelopment: environment.developmentKeyring
         }, mappedAccounts);
+    }
+
+    public getAccounts(): Observable<Account[]> {
+        if (!this._nodeState$ || this._nodeState$.value == null) {
+            return throwError(() => NOT_CONNECTED_MESSAGE);
+        }
+
+        const { api, keyring } = this._nodeState$.value
+        const keypairs = keyring.getPairs();
+        const addresses = this.getAddresses(keypairs);
+
+        return api.query.system.account
+            .multi(addresses)
+            .pipe(map((accounts) =>
+                addresses.map((address, i) => new Account(
+                    address,
+                    accounts[i],
+                    keypairs[i]
+                ))
+            ))
+    }
+
+    private getAddresses(keyringPairs: KeyringPair[]): string[] {
+        return keyringPairs.map((account: { address: string }) =>
+            account.address);
     }
 
     public selectAccount(account: Account) {

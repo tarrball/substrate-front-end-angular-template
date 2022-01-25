@@ -18,27 +18,11 @@ export class BalancesComponent implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.nodeService.nodeState$
-            .subscribe((state) => {
-                const { api, keyring } = state;
-                const accounts = keyring.getPairs();
-
-                const addresses = accounts
-                    .map((account: { address: string }) => account.address);
-
-                api.query.system.account
-                    .multi(addresses)
-                    .subscribe({
-                        next: (balances) => {
-                            this.accounts = addresses
-                                .map((address: string, index: number) =>
-                                    new Account(
-                                        address,
-                                        balances[index].data.free.toHuman(),
-                                        (accounts[index].meta as any).name));
-                        },
-                        error: (error) => console.error(error)
-                    });
+        this.nodeService
+            .getAccounts()
+            .subscribe({
+                next: (accounts) => this.accounts = accounts,
+                error: console.error
             });
     }
 

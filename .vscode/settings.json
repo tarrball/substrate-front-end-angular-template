@@ -2,5 +2,8 @@
     "eslint.format.enable": true,
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
-    }
+    },
+    "editor.formatOnSave": true,
+    "html.format.endWithNewline": true,
+    "html.format.wrapAttributes": "force-aligned"
 }

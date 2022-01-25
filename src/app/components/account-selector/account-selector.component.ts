@@ -24,48 +24,45 @@ export class AccountSelectorComponent implements OnInit {
     constructor(private nodeService: NodeService) { }
 
     public ngOnInit(): void {
-        this.nodeService.nodeState$
-            .subscribe((state) => {
-                const { api, keyring } = state
-                const accounts = keyring.getPairs();
-                const addresses = accounts
-                    .map((account: { address: string }) => account.address);
-
-                api.query.system.account
-                    .multi(addresses).subscribe({
-                        next: (balances) => {
-                            this.accounts = addresses
-                                .map((address: string, index: number) =>
-                                    new Account(
-                                        address,
-                                        balances[index].data.free.toHuman(),
-                                        (accounts[index].meta as any).name
-                                            .toUpperCase()));
-
-                            this.filteredAccounts = this.accountControl
-                                .valueChanges.pipe(
-                                    startWith(''),
-                                    map((value: string | Account) =>
-                                        typeof value === 'string'
-                                            ? value
-                                            : value.name),
-                                    map((name: string) => name
-                                        ? this.filter(name)
-                                        : this.accounts.slice())
-                                );
-
-                            if (this.accounts[0]) {
-                                this.accountControl.setValue(this.accounts[0]);
-                                this.selectAccount(this.accounts[0]);
-                            }
-                        },
-                        error: console.error
-                    });
-            })
+        this.nodeService
+            .getAccounts()
+            .subscribe({
+                next: (accounts) => this.setAccounts(accounts),
+                error: console.error
+            });
     }
 
-    public displayName(account: Account): string {
-        return account?.name ?? '';
+    private setAccounts(accounts: Account[]) {
+        this.accounts = accounts;
+
+        this.filteredAccounts = this.filterAccounts(
+            this.accountControl.valueChanges);
+
+        this.selectFirstAccount();
+    }
+
+    private filterAccounts(controlValueChanges$: Observable<string | Account>) {
+        return controlValueChanges$.pipe(
+            startWith(''),
+            map((value: string | Account) => typeof value === 'string'
+                ? value
+                : value.name),
+            map((name: string) => name
+                ? this.accounts.slice()
+                : this.accounts
+                    .filter(account => account.name
+                        .toLowerCase()
+                        .includes(name.toLowerCase()))
+            ));
+    }
+
+    private selectFirstAccount() {
+        if (this.accounts.length == 0) {
+            return;
+        }
+
+        this.accountControl.setValue(this.accounts[0]);
+        this.selectAccount(this.accounts[0]);
     }
 
     public selectAccount(account: Account) {
@@ -73,16 +70,11 @@ export class AccountSelectorComponent implements OnInit {
         this.selectedAccount = account;
     }
 
-    private filter(value: string): Account[] {
-        const filterValue = value.toLowerCase();
-
-        return this.accounts
-            .filter(account => account.name
-                .toLowerCase()
-                .includes(filterValue));
+    public accountDisplayName(account: Account): string {
+        return account?.name ?? '';
     }
 
-    public clear(event: Event, trigger: MatAutocompleteTrigger) {
+    public clearAccountSelector(event: Event, trigger: MatAutocompleteTrigger) {
         this.accountControl.setValue('');
         event.stopPropagation();
         trigger.openPanel();

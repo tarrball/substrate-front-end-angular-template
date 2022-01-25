@@ -2,24 +2,36 @@
     <mat-form-field appearance="fill">
         <mat-label>Select an account</mat-label>
 
-        <input #trigger="matAutocompleteTrigger" type="text" placeholder="Pick one" aria-label="Account Name" matInput
-            [formControl]="accountControl" [matAutocomplete]="auto">
+        <input #trigger="matAutocompleteTrigger"
+               matInput
+               aria-label="Account Name"
+               placeholder="Pick one"
+               type="text"
+               [formControl]="accountControl"
+               [matAutocomplete]="auto">
 
-        <button *ngIf="accountControl.value" matSuffix mat-icon-button aria-label="Clear"
-            (click)="clear($event, trigger)">
+        <button *ngIf="accountControl.value"
+                matSuffix
+                mat-icon-button
+                aria-label="Clear"
+                (click)="clearAccountSelector($event, trigger)">
             <mat-icon>close</mat-icon>
         </button>
 
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayName"
-            (optionSelected)="selectAccount($event.option.value)">
-            <mat-option *ngFor="let account of filteredAccounts | async" [value]="account">
+        <mat-autocomplete #auto="matAutocomplete"
+                          autoActiveFirstOption
+                          [displayWith]="accountDisplayName"
+                          (optionSelected)="selectAccount($event.option.value)">
+            <mat-option *ngFor="let account of filteredAccounts | async"
+                        [value]="account">
                 <mat-icon>person</mat-icon>
                 <span>{{account.name}}</span>
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
 
-    <div class="balance-annotation-container" *ngIf="selectedAccount">
+    <div class="balance-annotation-container"
+         *ngIf="selectedAccount">
         <span class="pointer"></span>
         <div class="balance-annotation">
             <mat-icon>local_atm</mat-icon>

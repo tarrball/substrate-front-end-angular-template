@@ -1,21 +1,32 @@
 <h1>Transfer</h1>
 
 <form [formGroup]="transferForm">
-    <shared-pointer-label [text]="'1 Unit = 1000000000000'"></shared-pointer-label>
+    <shared-pointer-label [text]="'1 Unit = 1000000000000'">
+    </shared-pointer-label>
 
     <shared-pointer-label [text]="'Transfer more than the existential amount for account with 0 balance'">
     </shared-pointer-label>
+
     <mat-form-field appearance="fill">
         <mat-label>To</mat-label>
-        <input formControlName="toAddress" matInput placeholder="Address">
+        <input matInput
+               formControlName="toAddress"
+               placeholder="Address">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Amount</mat-label>
-        <input formControlName="amount" matInput type="number" min=0>
+        <input matInput
+               formControlName="amount"
+               min=0
+               type="number" />
     </mat-form-field>
 
-    <button [disabled]="transferForm.invalid" mat-raised-button color="primary" (click)="submit()">Submit</button>
+    <button mat-raised-button
+            color="primary"
+            [disabled]="transferForm.invalid"
+            (click)="submit()">Submit</button>
 
-    <label class="status-label" *ngIf="transferStatus">{{transferStatus}}</label>
+    <label *ngIf="transferStatus"
+           class="status-label">{{transferStatus}}</label>
 </form>
