@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiRx, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
+import { KeyringPair } from '@polkadot/keyring/types';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { keyring } from '@polkadot/ui-keyring';
 import {
@@ -18,7 +19,6 @@ import {
 import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
 import { Account } from '../data-contracts/account';
-import { KeyringPair } from '@polkadot/keyring/types';
 
 const NO_ACCOUNT_SELECTED_MESSAGE = 'No account is selected.';
 const NOT_CONNECTED_MESSAGE = 'App is not connected to node.';
