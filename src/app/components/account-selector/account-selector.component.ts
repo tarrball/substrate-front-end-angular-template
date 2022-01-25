@@ -57,7 +57,7 @@ export class AccountSelectorComponent implements OnInit {
     }
 
     private selectFirstAccount() {
-        if (this.accounts.length == 0) {
+        if (this.accounts.length === 0) {
             return;
         }
 
