@@ -23,7 +23,7 @@
             <button #tooltip="matTooltip"
                     mat-icon-button
                     aria-label="Copy address button"
-                    class="btn-copy"
+                    class="icon-button"
                     matTooltip="Copied!"
                     matTooltipDisabled="true"
                     matTooltipPosition="right"
@@ -50,6 +50,6 @@
 
     <tr *matRowDef="let row; columns: displayedColumns; let even = even"
         mat-row
-        [class.even]="even">
+        [class.even-row]="even">
     </tr>
 </table>

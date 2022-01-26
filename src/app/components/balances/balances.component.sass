@@ -1,27 +1,22 @@
 .mat-header-row
     height: 40px
 
+.mat-cell
+    height: 48px
+
 .mat-column-name
-    padding-right: 16px
     text-align: right
+
+.mat-column-name, .mat-column-address
+    padding-right: 16px
 
 .mat-column-address, .mat-column-balance
     padding-left: 16px
 
-.even
-    background-color: rgba(0,0,50,.02)
+.mat-cell.cdk-column-address
+    align-items: center
+    display: flex
 
 .address
     display: inline-block
-    min-width: 31em
-
-.btn-copy
-    box-shadow: 0 0 0 1px #2185d0 inset !important
-    color: #2185d0 !important
-    line-height: 24px
-    max-height: 24px
-    max-width: 24px
-
-    .mat-icon
-        font-size: 14px
-        padding-bottom: 1px
+    flex-grow: 1

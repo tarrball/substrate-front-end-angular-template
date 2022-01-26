@@ -4,17 +4,17 @@ body
     color: $font-color
 
 h1
-    min-height: 1rem
+    min-height: 16px
 
 .mat-typography h1
-    font-size: 2rem
+    font-size: 32px
     font-weight: 700
 
 .mat-table
     border: 1px solid rgba(34,36,38,.15)
-    border-radius: .28571429rem
+    border-radius: 4px
     box-shadow: none
-    margin: 1em 0
+    margin: 16px 0
     width: 100%
 
     & .mat-header-cell
@@ -26,16 +26,19 @@ h1
         &:first-child
             border-left: unset
 
+    .even-row
+        background-color: #f5f5f58a
+
 .block-header-row
     align-items: stretch
     display: flex
     flex-wrap: wrap
     justify-content: space-evenly
-    padding: 1rem 0
+    padding: 16px 0
 
     & > *
         flex: 1 1 0
-        margin: 1rem
+        margin: 16px
 
         &:first-child
             margin-left: 0
@@ -52,11 +55,11 @@ h1
     & .mat-card
         display: flex
         flex-direction: column
-        height: 145px
+        height: 160px
 
     & .mat-card-content
         flex-grow: 1
-        margin-top: .5rem
+        margin-top: 8px
         color: rgba(0, 0, 0, .68)
 
     & .mat-divider-horizontal
@@ -64,11 +67,21 @@ h1
 
     & .mat-card-footer
         color: rgb(0, 0, 0, 0.4)
-        font-size: 1em
+        font-size: 16px
         padding: 8px 16px
 
     & .mat-icon
-        font-size: 1em
-        height: 1em
+        font-size: 16px
+        height: 16px
         text-align: center
-        width: 1.18em
+
+.icon-button
+    box-shadow: 0 0 0 1px #2185d0 inset !important
+    color: #2185d0 !important
+    line-height: 24px !important
+    max-height: 24px !important
+    max-width: 24px !important
+
+    .mat-icon
+        font-size: 14px !important
+        padding-bottom: 1px !important
