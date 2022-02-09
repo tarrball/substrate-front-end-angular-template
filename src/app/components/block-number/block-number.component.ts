@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BlockNumber } from '@polkadot/types/interfaces';
-import { interval, Subscription, switchMap } from 'rxjs';
+import { Subscription, interval, switchMap } from 'rxjs';
 
+import { BlockNumber } from '@polkadot/types/interfaces';
 import { NodeService } from 'src/app/services/node.service';
 
 @Component({

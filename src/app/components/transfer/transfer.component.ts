@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
+import { Component } from '@angular/core';
 import { NodeService } from 'src/app/services/node.service';
 
 @Component({

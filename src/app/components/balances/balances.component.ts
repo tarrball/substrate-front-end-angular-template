@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTooltip } from '@angular/material/tooltip';
 
 import { Account } from 'src/app/data-contracts/account';
+import { MatTooltip } from '@angular/material/tooltip';
 import { NodeService } from 'src/app/services/node.service';
 
 @Component({

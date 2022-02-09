@@ -1,24 +1,15 @@
-import { Injectable } from '@angular/core';
 import { ApiRx, WsProvider } from '@polkadot/api';
+import { BehaviorSubject, Observable, Subscription, filter, from, map, switchMap, throwError } from 'rxjs';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+
+import { Account } from '../data-contracts/account';
+import { Injectable } from '@angular/core';
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
 import { KeyringPair } from '@polkadot/keyring/types';
-import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
-import { keyring } from '@polkadot/ui-keyring';
-import {
-    BehaviorSubject,
-    filter,
-    from,
-    map,
-    Observable,
-    Subscription,
-    switchMap,
-    throwError
-} from 'rxjs';
-
 import { NodeState } from '../contracts/node-state';
 import { environment } from 'src/environments/environment';
-import { Account } from '../data-contracts/account';
+import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
+import { keyring } from '@polkadot/ui-keyring';
 
 const NO_ACCOUNT_SELECTED_MESSAGE = 'No account is selected.';
 const NOT_CONNECTED_MESSAGE = 'App is not connected to node.';

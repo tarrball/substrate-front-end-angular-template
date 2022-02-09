@@ -19,10 +19,34 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "eqeqeq": ["error", "always", {"null": "ignore"}],
-        "indent": ["error", 4], 
-        "max-len": ["error", { "code": 80 }],
-        "quotes": ["error", "single", { "allowTemplateLiterals": true }]        
+        "eqeqeq": [
+          "error",
+          "always",
+          {
+            "null": "ignore"
+          }
+        ],
+        "indent": [
+          "error",
+          4
+        ],
+        "max-len": [
+          "error",
+          {
+            "code": 80,
+            "ignorePattern": "^import .+ from"
+          }
+        ],
+        "quotes": [
+          "error",
+          "single",
+          {
+            "allowTemplateLiterals": true
+          }
+        ],
+        "sort-imports": [
+          "error"
+        ]
       }
     },
     {

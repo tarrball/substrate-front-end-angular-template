@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { switchMap } from 'rxjs';
 
 import { NodeService } from 'src/app/services/node.service';
+import { switchMap } from 'rxjs';
 
 const FILTERED_OUT_EVENT_NAME_PHRASES = [
     'system:ExtrinsicSuccess::(phase={"applyExtrinsic":0})',

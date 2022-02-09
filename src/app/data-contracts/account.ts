@@ -1,5 +1,5 @@
-import { KeyringPair } from '@polkadot/keyring/types';
 import { FrameSystemAccountInfo } from '@polkadot/types/lookup';
+import { KeyringPair } from '@polkadot/keyring/types';
 
 export class Account {
     public balance: string;

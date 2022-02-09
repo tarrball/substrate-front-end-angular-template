@@ -1,9 +1,9 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
+
 import { MatDialog } from '@angular/material/dialog';
 import { Metadata } from '@polkadot/types';
-import { switchMap } from 'rxjs';
-
 import { NodeService } from 'src/app/services/node.service';
+import { switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-metadata',
