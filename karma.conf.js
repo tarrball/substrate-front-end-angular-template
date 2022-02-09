@@ -2,9 +2,12 @@
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
 module.exports = function (config) {
-  config.set({
-    basePath: '',
+  config.set({    
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    files: [
+      'karma.variables.js',
+      'src/**/*.spec.ts'
+    ],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
