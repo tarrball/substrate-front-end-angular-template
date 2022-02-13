@@ -22,23 +22,36 @@ describe('TransferComponent', () => {
     describe('form', () => {
         describe('toAddress', () => {
             it('should be required', () => {
-                component.transferForm
+                const result = component.transferForm
                     .get('toAddress')!
                     .hasValidator(Validators.required);
+
+                expect(result).toBeTrue();
             });
         })
 
         describe('amount', () => {
             it('should be required', () => {
-                component.transferForm
+                const result = component.transferForm
                     .get('amount')!
                     .hasValidator(Validators.required);
+
+                expect(result).toBeTrue();
             });
 
-            it('should have a minimum of 1', () => {
-                component.transferForm
-                    .get('amount')!
-                    .hasValidator(Validators.min(1));
+            [
+                { amount: -1, isValid: false },
+                { amount: 0, isValid: false },
+                { amount: 0.00001, isValid: false },
+                { amount: 1, isValid: true }
+            ].forEach(testCase => {
+                it('should have a minimum value of 1', () => {
+                    const control = component.transferForm.get('amount')!;
+
+                    control.setValue(testCase.amount);
+
+                    expect(control.valid).toBe(testCase.isValid);
+                });
             });
         })
     });
