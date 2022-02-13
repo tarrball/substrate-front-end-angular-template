@@ -1,25 +1,32 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatDialog } from '@angular/material/dialog';
 import { MetadataComponent } from './metadata.component';
+import { NodeService } from 'src/app/services/node.service';
 
 describe('MetadataComponent', () => {
     let component: MetadataComponent;
-    let fixture: ComponentFixture<MetadataComponent>;
+
+    let dialogMock: MatDialog;
+
+    let nodeServiceSpy: jasmine.SpyObj<NodeService>;
 
     beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [MetadataComponent]
-        })
-            .compileComponents();
-    });
+        nodeServiceSpy = jasmine.createSpyObj('NodeService', ['nodeState$']);
+        dialogMock = { open: jasmine.createSpy() } as any;
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(MetadataComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        component = new MetadataComponent(nodeServiceSpy, dialogMock);
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    describe('openDialog', () => {
+        it('should open the dialog with the template ref', () => {
+            const templateRef = { data: 'any old data will do' } as any;
+
+            component.openDialog(templateRef);
+
+            expect(dialogMock.open).toHaveBeenCalledWith(templateRef);
+        })
+    })
 });

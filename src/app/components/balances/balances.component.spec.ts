@@ -1,22 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BalancesComponent } from './balances.component';
+import { NodeService } from 'src/app/services/node.service';
 
 describe('BalancesComponent', () => {
     let component: BalancesComponent;
-    let fixture: ComponentFixture<BalancesComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [BalancesComponent]
-        })
-            .compileComponents();
-    });
+    let nodeServiceSpy: jasmine.SpyObj<NodeService>;
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(BalancesComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        nodeServiceSpy = jasmine.createSpyObj('NodeService', ['getAccounts']);
+
+        component = new BalancesComponent(nodeServiceSpy);
     });
 
     it('should create', () => {

@@ -1,22 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { EventsComponent } from './events.component';
+import { NodeService } from 'src/app/services/node.service';
 
 describe('EventsComponent', () => {
     let component: EventsComponent;
-    let fixture: ComponentFixture<EventsComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [EventsComponent]
-        })
-            .compileComponents();
-    });
+    let nodeServiceSpy: jasmine.SpyObj<NodeService>;
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(EventsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        nodeServiceSpy = jasmine.createSpyObj('NodeService', ['nodeState$']);
+
+        component = new EventsComponent(nodeServiceSpy);
     });
 
     it('should create', () => {

@@ -1,22 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BlockNumberComponent } from './block-number.component';
+import { NodeService } from 'src/app/services/node.service';
 
 describe('BlockNumberComponent', () => {
     let component: BlockNumberComponent;
-    let fixture: ComponentFixture<BlockNumberComponent>;
+
+    let nodeServiceSpy: jasmine.SpyObj<NodeService>;
 
     beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [BlockNumberComponent]
-        })
-            .compileComponents();
-    });
+        nodeServiceSpy = jasmine.createSpyObj('NodeService', ['nodeState$']);
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(BlockNumberComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        component = new BlockNumberComponent(nodeServiceSpy);
     });
 
     it('should create', () => {
