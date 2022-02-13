@@ -1,22 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AccountSelectorComponent } from './account-selector.component';
+import { NodeService } from 'src/app/services/node.service';
 
 describe('AccountSelectorComponent', () => {
     let component: AccountSelectorComponent;
-    let fixture: ComponentFixture<AccountSelectorComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [AccountSelectorComponent]
-        })
-            .compileComponents();
-    });
+    let nodeServiceSpy: jasmine.SpyObj<NodeService>;
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AccountSelectorComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        nodeServiceSpy = jasmine.createSpyObj('NodeService', ['getAccounts']);
+
+        component = new AccountSelectorComponent(nodeServiceSpy);
     });
 
     it('should create', () => {

@@ -1,29 +1,20 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { AppRoutingModule } from './app-routing.module';
+import { AccountSelectorComponent } from './components/account-selector/account-selector.component';
 import { AppComponent } from './app.component';
-import {
-    BlockNumberComponent
-} from './components/block-number/block-number.component';
-import { SharedModule } from './shared/shared.module';
-import { MetadataComponent } from './components/metadata/metadata.component';
-import { NodeInfoComponent } from './components/node-info/node-info.component';
+import { AppRoutingModule } from './app-routing.module';
 import { BalancesComponent } from './components/balances/balances.component';
-import { HeaderComponent } from './components/header/header.component';
-import {
-    AccountSelectorComponent
-} from './components/account-selector/account-selector.component';
-import { TransferComponent } from './components/transfer/transfer.component';
-import {
-    InteractorComponent
-} from './components/interactor/interactor.component';
-import { UpgradeComponent } from './components/upgrade/upgrade.component';
+import { BlockNumberComponent } from './components/block-number/block-number.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { EventsComponent } from './components/events/events.component';
-import {
-    TemplateModuleComponent
-} from './components/template-module/template-module.component';
+import { HeaderComponent } from './components/header/header.component';
+import { InteractorComponent } from './components/interactor/interactor.component';
+import { MetadataComponent } from './components/metadata/metadata.component';
+import { NgModule } from '@angular/core';
+import { NodeInfoComponent } from './components/node-info/node-info.component';
+import { SharedModule } from './shared/shared.module';
+import { TemplateModuleComponent } from './components/template-module/template-module.component';
+import { TransferComponent } from './components/transfer/transfer.component';
+import { UpgradeComponent } from './components/upgrade/upgrade.component';
 
 @NgModule({
     declarations: [
