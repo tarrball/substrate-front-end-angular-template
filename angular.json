@@ -20,7 +20,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["crypto"],
+            "allowedCommonJsDependencies": [
+              "crypto",
+              "ed2curve",
+              "store",
+              "tweetnacl"
+            ],
             "outputPath": "dist/substrate-angular-template",
             "index": "src/index.html",
             "main": "src/main.ts",
