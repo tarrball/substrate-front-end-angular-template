@@ -22,10 +22,7 @@ export class AppComponent implements OnInit {
             .connectToNode()
             .subscribe({
                 next: () => this.isConnected = true,
-                error: (error) => {
-                    this.isConnected = false;
-                    console.error(error);
-                }
+                error: () => this.isConnected = false
             });
     }
 }
