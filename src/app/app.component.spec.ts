@@ -5,8 +5,13 @@ import { NodeService } from './services/node.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestBed } from '@angular/core/testing';
 
+let nodeServiceSpy: jasmine.SpyObj<NodeService>;
+
 describe('AppComponent Smoke Test', () => {
     beforeEach(async () => {
+        nodeServiceSpy = jasmine.createSpyObj('NodeService', ['connectToNode']);
+        nodeServiceSpy.connectToNode.and.returnValue(EMPTY);
+
         await TestBed.configureTestingModule({
             imports: [
                 RouterTestingModule
@@ -14,6 +19,9 @@ describe('AppComponent Smoke Test', () => {
             declarations: [
                 AppComponent
             ],
+            providers: [{
+                provider: NodeService, useValue: nodeServiceSpy
+            }]
         }).compileComponents();
     });
 
@@ -26,8 +34,6 @@ describe('AppComponent Smoke Test', () => {
 
 describe('AppComponent Unit Tests', () => {
     let component: AppComponent;
-
-    let nodeServiceSpy: jasmine.SpyObj<NodeService>;
 
     beforeEach(() => {
         nodeServiceSpy = jasmine.createSpyObj('NodeService', ['connectToNode']);

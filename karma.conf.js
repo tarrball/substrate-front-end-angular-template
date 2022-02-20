@@ -3,10 +3,10 @@
 
 module.exports = function (config) {
   config.set({    
+    basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     files: [
-      'karma.variables.js',
-      'src/**/*.spec.ts'
+      { pattern: 'karma.variables.js', type: 'js' },   
     ],
     plugins: [
       require('karma-jasmine'),

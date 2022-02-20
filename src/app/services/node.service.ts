@@ -96,7 +96,7 @@ export class NodeService {
         const keypairs = keyring.getPairs();
         const addresses = this.getAddresses(keypairs);
 
-        return api.query.system.account
+        return api.query['system']['account']
             .multi(addresses)
             .pipe(map((accounts) =>
                 addresses.map((address, i) => new Account(
@@ -129,8 +129,7 @@ export class NodeService {
         const keyPair = keyring.getPair(this.selectedAccount.address);
 
         const observable = new Observable<string>((subscriber) => {
-            api.tx.balances
-                .transfer(toAddress, amount)
+            api.tx['balances']['transfer'](toAddress, amount)
                 .signAndSend(keyPair)
                 .subscribe({
                     next: result => {
