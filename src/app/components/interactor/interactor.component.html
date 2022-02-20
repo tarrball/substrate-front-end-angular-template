@@ -1,6 +1,6 @@
 <h1>Pallet Interactor</h1>
 
-<div class="input-container">
+<form [formGroup]="interactorForm">
     <h3>Interaction Type</h3>
 
     <mat-button-toggle-group name="iteractionType"
@@ -26,25 +26,25 @@
     </mat-form-field>
 
     <!-- TODO *ngFor param inputs -->
-</div>
 
-<div class="btn-container">
-    <button mat-raised-button
-            [disabled]="unsignedDisabled">
-        Unsigned
-    </button>
-    <label>or</label>
-    <button mat-raised-button
-            color="primary"
-            [disabled]="signedDisabled">
-        Signed
-    </button>
-    <label>or</label>
-    <button mat-raised-button
-            color="warn"
-            [disabled]="sudoDisabled">
-        SUDO
-    </button>
-</div>
+    <div class="btn-container">
+        <button mat-raised-button
+                [disabled]="unsignedDisabled">
+            Unsigned
+        </button>
+        <label>or</label>
+        <button mat-raised-button
+                color="primary"
+                [disabled]="signedDisabled">
+            Signed
+        </button>
+        <label>or</label>
+        <button mat-raised-button
+                color="warn"
+                [disabled]="sudoDisabled">
+            SUDO
+        </button>
+    </div>
 
-<!-- TODO - status label -->
+    <!-- TODO - status label -->
+</form>

@@ -6,7 +6,7 @@ import { Account } from '../data-contracts/account';
 import { Injectable } from '@angular/core';
 import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
 import { KeyringPair } from '@polkadot/keyring/types';
-import { NodeState } from '../contracts/node-state';
+import { NodeState } from '../data-contracts/node-state';
 import { environment } from 'src/environments/environment';
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { keyring } from '@polkadot/ui-keyring';
