@@ -28,7 +28,10 @@
         ],
         "indent": [
           "error",
-          4
+          4,
+          {
+            "SwitchCase": 1
+          }
         ],
         "max-len": [
           "error",
@@ -43,9 +46,6 @@
           {
             "allowTemplateLiterals": true
           }
-        ],
-        "sort-imports": [
-          "error"
         ]
       }
     },

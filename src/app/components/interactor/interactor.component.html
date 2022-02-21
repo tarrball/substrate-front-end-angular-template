@@ -3,25 +3,28 @@
 <form [formGroup]="interactorForm">
     <h3>Interaction Type</h3>
 
-    <mat-button-toggle-group name="iteractionType"
+    <mat-button-toggle-group formControlName="interactionType"
+                             name="iteractionType"
                              aria-name="Interation Type">
-        <mat-button-toggle value="extrinsic">Extrinsic</mat-button-toggle>
-        <mat-button-toggle value="query">Query</mat-button-toggle>
-        <mat-button-toggle value="rpc">RPC</mat-button-toggle>
-        <mat-button-toggle value="constant">Constant</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.extrinsic">Extrinsic</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.query">Query</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.rpc">RPC</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.constant">Constant</mat-button-toggle>
     </mat-button-toggle-group>
 
     <mat-form-field appearance="fill">
         <mat-label>Pallets / RPC</mat-label>
-        <mat-select>
-            <mat-option>balances</mat-option>
+        <mat-select formControlName="palletRpc">
+            <mat-option *ngFor="let rpc of palletRpcs"
+                        [value]="rpc">{{rpc}}</mat-option>
         </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
         <mat-label>Callables</mat-label>
-        <mat-select>
-            <mat-option>forceTransfer</mat-option>
+        <mat-select formControlName="palletCallables">
+            <mat-option *ngFor="let callable of palletCallables"
+                        [value]="callable">{{callable}}</mat-option>
         </mat-select>
     </mat-form-field>
 
