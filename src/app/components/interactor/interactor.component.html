@@ -22,13 +22,19 @@
 
     <mat-form-field appearance="fill">
         <mat-label>Callables</mat-label>
-        <mat-select formControlName="palletCallables">
+        <mat-select formControlName="palletCallable">
             <mat-option *ngFor="let callable of palletCallables"
                         [value]="callable">{{callable}}</mat-option>
         </mat-select>
     </mat-form-field>
 
-    <!-- TODO *ngFor param inputs -->
+    <ng-container *ngFor="let control of palletParamControls">
+        <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput
+                   [formControl]="control">
+        </mat-form-field>
+    </ng-container>
 
     <div class="btn-container">
         <button mat-raised-button

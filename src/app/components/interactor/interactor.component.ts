@@ -1,4 +1,11 @@
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    FormArray,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators
+    } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { NodeService } from 'src/app/services/node.service';
 import { NodeState } from 'src/app/data-contracts/node-state';
@@ -14,7 +21,8 @@ export class InteractorComponent implements OnInit {
     public interactorForm = this.fb.group({
         interactionType: [undefined, Validators.required],
         palletRpc: ['', Validators.required],
-        palletCallables: ['', Validators.required]
+        palletCallable: ['', Validators.required],
+        palletParams: this.fb.array([])
     });
 
     public palletCallables: string[] = [];
@@ -33,6 +41,17 @@ export class InteractorComponent implements OnInit {
 
     public get palletRpcControl(): AbstractControl {
         return this.interactorForm.get('palletRpc')!
+    }
+
+    public get palletCallableControl(): AbstractControl {
+        return this.interactorForm.get('palletCallable')!
+    }
+
+    public get palletParamControls(): FormControl[] {
+        return (this.interactorForm.get('palletParams') as FormArray)
+            ?.controls
+            ?.map(abstractControl => abstractControl as FormControl)
+            ?? [];
     }
 
     private nodeState!: NodeState;
@@ -54,6 +73,10 @@ export class InteractorComponent implements OnInit {
                 .subscribe((key: string) =>
                     this.updatePalletCallables(key));
 
+            this.palletCallableControl.valueChanges
+                .subscribe((callable: string) =>
+                    this.updatePalletParameterFields(callable));
+
             this.interactionTypeControl.setValue(InteractionType.extrinsic);
         })
     }
@@ -63,7 +86,7 @@ export class InteractorComponent implements OnInit {
 
         this.palletRpcs = Object
             .keys(api)
-            // .filter(key => api[key].length > 0)
+            .filter(rpc => Object.keys(api[rpc]).length > 0)
             .sort();
     }
 
@@ -76,6 +99,24 @@ export class InteractorComponent implements OnInit {
         }
 
         this.palletCallables = callables;
+    }
+
+    private updatePalletParameterFields(callable: string) {
+        const params = this.interactorForm.get('palletParams')! as FormArray;
+
+        const placeholder = true
+            ? 'Optional Parameter'
+            : 'Leaving this field as blank will submit a NONE value';
+
+        const validators = true ? [Validators.required] : [];
+
+        params.push(this.fb.control({
+            name: ['', validators]
+        }))
+
+        params.push(this.fb.control({
+            name: ['', validators]
+        }))
     }
 
     private getApi(type: InteractionType): any {
