@@ -1,11 +1,4 @@
-import {
-    AbstractControl,
-    FormArray,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    Validators
-    } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { NodeService } from 'src/app/services/node.service';
 import { NodeState } from 'src/app/data-contracts/node-state';
@@ -29,6 +22,10 @@ export class InteractorComponent implements OnInit {
 
     public palletRpcs: string[] = [];
 
+    public selectedRpcParams: RpcParam[] = [];
+
+    public signedButtonLabel = 'Submit';
+
     public signedDisabled = false;
 
     public sudoDisabled = false;
@@ -47,8 +44,12 @@ export class InteractorComponent implements OnInit {
         return this.interactorForm.get('palletCallable')!
     }
 
+    public get palletParamArray(): FormArray {
+        return this.interactorForm.get('palletParams') as FormArray;
+    }
+
     public get palletParamControls(): FormControl[] {
-        return (this.interactorForm.get('palletParams') as FormArray)
+        return this.palletParamArray
             ?.controls
             ?.map(abstractControl => abstractControl as FormControl)
             ?? [];
@@ -65,8 +66,10 @@ export class InteractorComponent implements OnInit {
 
             this.interactionTypeControl.valueChanges
                 .subscribe((type: InteractionType) => {
+                    this.updateSubmitButtonLabel(type);
                     this.updatePalletRpcs(type);
-                    this.palletRpcControl.reset();
+                    this.palletRpcControl.setValue('');
+                    this.clearPalletParameterFields();
                 })
 
             this.palletRpcControl.valueChanges
@@ -77,8 +80,14 @@ export class InteractorComponent implements OnInit {
                 .subscribe((callable: string) =>
                     this.updatePalletParameterFields(callable));
 
-            this.interactionTypeControl.setValue(InteractionType.extrinsic);
+            this.interactionTypeControl.setValue(InteractionType.Extrinsic);
         })
+    }
+
+    private updateSubmitButtonLabel(type: InteractionType): void {
+        this.signedButtonLabel = type === InteractionType.Query
+            ? this.signedButtonLabel = 'Query'
+            : this.signedButtonLabel = 'Submit';
     }
 
     private updatePalletRpcs(type: InteractionType): void {
@@ -90,53 +99,88 @@ export class InteractorComponent implements OnInit {
             .sort();
     }
 
-    private updatePalletCallables(palletKey: string) {
+    private updatePalletCallables(palletKey: string): void {
         let callables: string[] = [];
 
         if (palletKey) {
             const api = this.getApi(this.interactionTypeControl.value);
-            callables = Object.keys(api[palletKey]);
+            callables = Object.keys(api[palletKey]).sort();
         }
 
         this.palletCallables = callables;
     }
 
-    private updatePalletParameterFields(callable: string) {
-        const params = this.interactorForm.get('palletParams')! as FormArray;
+    private updatePalletParameterFields(callable: string): void {
+        this.clearPalletParameterFields();
 
-        const placeholder = true
-            ? 'Optional Parameter'
-            : 'Leaving this field as blank will submit a NONE value';
+        const type = this.interactionTypeControl.value as InteractionType;
+        const rpc = this.palletRpcControl.value as string;
+        const api = this.getApi(type);
 
-        const validators = true ? [Validators.required] : [];
+        if (type === InteractionType.Extrinsic) {
+            api[rpc][callable].meta.args?.forEach((arg: any) => {
+                const isOptional = this.isArgOptional(arg);
+                const placeholder = arg.type.toString();
+                const label = this.getLabel(arg, type, isOptional);
 
-        params.push(this.fb.control({
-            name: ['', validators]
-        }))
+                this.selectedRpcParams.push({ label, placeholder, isOptional });
 
-        params.push(this.fb.control({
-            name: ['', validators]
-        }))
+                const newControl = isOptional
+                    ? this.fb.control('')
+                    : this.fb.control('', Validators.required);
+
+                this.palletParamArray.push(newControl);
+            });
+        }
+    }
+
+    private clearPalletParameterFields(): void {
+        (this.interactorForm.get('palletParams') as FormArray).clear();
+        this.selectedRpcParams = [];
     }
 
     private getApi(type: InteractionType): any {
         switch (type) {
-            case InteractionType.extrinsic:
+            case InteractionType.Extrinsic:
                 return this.nodeState.api.tx;
-            case InteractionType.query:
+            case InteractionType.Query:
                 return this.nodeState.api.query;
-            case InteractionType.rpc:
+            case InteractionType.Rpc:
                 return this.nodeState.api.rpc;
-            case InteractionType.constant:
+            case InteractionType.Constant:
             default:
                 return this.nodeState.api.consts;
         }
     }
+
+    private getLabel(arg: any, type: InteractionType, isOptional: boolean)
+        : string {
+
+        const name = arg.name.toString();
+
+        if (!isOptional) {
+            return name;
+        }
+
+        return name + type === InteractionType.Rpc
+            ? ' (Optional)'
+            : ' (Leaving this field blank will submit a NONE value';
+    }
+
+    private isArgOptional(arg: any): boolean {
+        return arg.type.toString().startsWith('Option<');
+    }
 }
 
 enum InteractionType {
-    extrinsic = 0,
-    query,
-    rpc,
-    constant
+    Extrinsic = 0,
+    Query,
+    Rpc,
+    Constant
+}
+
+interface RpcParam {
+    label: string;
+    placeholder: string;
+    isOptional: boolean;
 }

@@ -6,10 +6,10 @@
     <mat-button-toggle-group formControlName="interactionType"
                              name="iteractionType"
                              aria-name="Interation Type">
-        <mat-button-toggle [value]="interactionType.extrinsic">Extrinsic</mat-button-toggle>
-        <mat-button-toggle [value]="interactionType.query">Query</mat-button-toggle>
-        <mat-button-toggle [value]="interactionType.rpc">RPC</mat-button-toggle>
-        <mat-button-toggle [value]="interactionType.constant">Constant</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.Extrinsic">Extrinsic</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.Query">Query</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.Rpc">RPC</mat-button-toggle>
+        <mat-button-toggle [value]="interactionType.Constant">Constant</mat-button-toggle>
     </mat-button-toggle-group>
 
     <mat-form-field appearance="fill">
@@ -28,31 +28,36 @@
         </mat-select>
     </mat-form-field>
 
-    <ng-container *ngFor="let control of palletParamControls">
+    <ng-container *ngFor="let control of palletParamControls; let i = index;">
         <mat-form-field appearance="fill">
-            <mat-label>Name</mat-label>
+            <mat-label>{{selectedRpcParams[i].label}}</mat-label>
             <input matInput
-                   [formControl]="control">
+                   [formControl]="control"
+                   [placeholder]="selectedRpcParams[i].placeholder">
         </mat-form-field>
     </ng-container>
 
     <div class="btn-container">
+        <ng-container *ngIf="interactorForm.get('interactionType')?.value === interactionType.Extrinsic">
+            <button mat-raised-button
+                    [disabled]="unsignedDisabled">
+                Unsigned
+            </button>
+            <label>or</label>
+        </ng-container>
         <button mat-raised-button
-                [disabled]="unsignedDisabled">
-            Unsigned
+                color="primary">
+            {{signedButtonLabel}}
         </button>
-        <label>or</label>
-        <button mat-raised-button
-                color="primary"
-                [disabled]="signedDisabled">
-            Signed
-        </button>
-        <label>or</label>
-        <button mat-raised-button
-                color="warn"
-                [disabled]="sudoDisabled">
-            SUDO
-        </button>
+        <ng-container *ngIf="interactorForm.get('interactionType')?.value === interactionType.Extrinsic">
+            <label>or</label>
+            <button *ngIf="interactorForm.get('interactionType')?.value === interactionType.Extrinsic"
+                    mat-raised-button
+                    color="warn"
+                    [disabled]="sudoDisabled">
+                SUDO
+            </button>
+        </ng-container>
     </div>
 
     <!-- TODO - status label -->
