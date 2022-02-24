@@ -2,6 +2,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from
 import { Component, OnInit } from '@angular/core';
 import { NodeService } from 'src/app/services/node.service';
 import { NodeState } from 'src/app/data-contracts/node-state';
+import { TransactionType } from 'src/app/shared/enums/transaction-type';
 
 @Component({
     selector: 'app-interactor',
@@ -28,9 +29,11 @@ export class InteractorComponent implements OnInit {
 
     public signedDisabled = false;
 
-    public sudoDisabled = false;
+    public sudoDisabled = true;
 
-    public unsignedDisabled = false;
+    public transferStatus = '';
+
+    public unsignedDisabled = true;
 
     public get interactionTypeControl(): AbstractControl {
         return this.interactorForm.get('interactionType')!
@@ -85,9 +88,16 @@ export class InteractorComponent implements OnInit {
     }
 
     private updateSubmitButtonLabel(type: InteractionType): void {
-        this.signedButtonLabel = type === InteractionType.Query
-            ? this.signedButtonLabel = 'Query'
-            : this.signedButtonLabel = 'Submit';
+        switch (type) {
+            case InteractionType.Extrinsic:
+                this.signedButtonLabel = 'Signed';
+                break;
+            case InteractionType.Query:
+                this.signedButtonLabel = 'Query';
+                break;
+            default:
+                this.signedButtonLabel = 'Submit';
+        }
     }
 
     private updatePalletRpcs(type: InteractionType): void {
@@ -169,6 +179,29 @@ export class InteractorComponent implements OnInit {
 
     private isArgOptional(arg: any): boolean {
         return arg.type.toString().startsWith('Option<');
+    }
+
+    public signedButtonClicked() {
+        this.transferStatus = '';
+
+        const type = this.interactionTypeControl.value as InteractionType;
+        const api = this.getApi(type);
+        const rpc = this.palletRpcControl.value as string;
+        const callable = this.palletCallableControl.value as string;
+
+        const params = this.palletParamArray.controls.
+            map((m => m.value as string))
+
+        this.nodeService.executeTransaction(
+            api,
+            rpc,
+            callable,
+            params,
+            TransactionType.Signed
+        ).subscribe({
+            next: result => this.transferStatus = result,
+            error: error => this.transferStatus = error
+        });
     }
 }
 

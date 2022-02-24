@@ -46,7 +46,8 @@
             <label>or</label>
         </ng-container>
         <button mat-raised-button
-                color="primary">
+                color="primary"
+                (click)="signedButtonClicked()">
             {{signedButtonLabel}}
         </button>
         <ng-container *ngIf="interactorForm.get('interactionType')?.value === interactionType.Extrinsic">
@@ -60,5 +61,6 @@
         </ng-container>
     </div>
 
-    <!-- TODO - status label -->
+    <label *ngIf="transferStatus"
+           class="status-label">{{transferStatus}}</label>
 </form>

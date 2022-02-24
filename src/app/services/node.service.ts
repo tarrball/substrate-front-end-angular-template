@@ -1,15 +1,26 @@
-import { ApiRx, WsProvider } from '@polkadot/api';
-import { BehaviorSubject, Observable, Subscription, filter, from, map, switchMap, throwError } from 'rxjs';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-
+import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
 import { Account } from '../data-contracts/account';
+import { ApiRx, WsProvider } from '@polkadot/api';
+import {
+    BehaviorSubject,
+    filter,
+    from,
+    map,
+    Observable,
+    Subscription,
+    switchMap,
+    throwError
+    } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
-import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
+import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { keyring } from '@polkadot/ui-keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { NodeState } from '../data-contracts/node-state';
-import { environment } from 'src/environments/environment';
-import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
-import { keyring } from '@polkadot/ui-keyring';
+import { TransactionType } from '../shared/enums/transaction-type';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+
 
 const NO_ACCOUNT_SELECTED_MESSAGE = 'No account is selected.';
 const NOT_CONNECTED_MESSAGE = 'App is not connected to node.';
@@ -52,6 +63,55 @@ export class NodeService {
             });
 
         return this.nodeState$;
+    }
+
+    public executeTransaction(
+        api: any, // losing the strong typing for results & all with this
+        palletRpc: string,
+        palletCallable: string,
+        palletParams: any[],
+        // palletParams: { [key: string]: string },
+        type: TransactionType): Observable<string> {
+
+        if (type === TransactionType.Signed) {
+            if (this.selectedAccount == null) {
+                return throwError(() => NO_ACCOUNT_SELECTED_MESSAGE);
+            }
+
+            if (this._nodeState$.value == null) {
+                return throwError(() => NOT_CONNECTED_MESSAGE);
+            }
+
+            const { keyring } = this._nodeState$.value;
+            const keyPair = keyring.getPair(this.selectedAccount.address);
+
+            const observable = new Observable<string>((subscriber) => {
+                api[palletRpc][palletCallable](...palletParams)
+                    .signAndSend(keyPair)
+                    .subscribe({
+                        next: (result: ISubmittableResult) => {
+                            if (result.status.isFinalized) {
+                                subscriber.next(`😉 Finalized. Block hash: ` +
+                                    `${result.status.asFinalized.toString()}`);
+
+                                subscriber.complete();
+                            } else {
+                                subscriber.next(`Current transaction status: ` +
+                                    `${result.status.type}`);
+                            }
+                        },
+                        error: (error: Error) => {
+                            console.error(error);
+                            subscriber.error(`😞 Transaction Failed: ` +
+                                `${error.toString()}`)
+                        }
+                    });
+            })
+
+            return observable;
+        }
+
+        return throwError(() => 'This feature is not yet implemented!');
     }
 
     private loadAccountsIfReady(api: ApiRx) {
@@ -121,36 +181,12 @@ export class NodeService {
             return throwError(() => NOT_CONNECTED_MESSAGE);
         }
 
-        if (this.selectedAccount == null) {
-            return throwError(() => NO_ACCOUNT_SELECTED_MESSAGE);
-        }
-
-        const { api, keyring } = this._nodeState$.value;
-        const keyPair = keyring.getPair(this.selectedAccount.address);
-
-        const observable = new Observable<string>((subscriber) => {
-            api.tx['balances']['transfer'](toAddress, amount)
-                .signAndSend(keyPair)
-                .subscribe({
-                    next: result => {
-                        if (result.status.isFinalized) {
-                            subscriber.next(`😉 Finalized. Block hash: ` +
-                                `${result.status.asFinalized.toString()}`);
-
-                            subscriber.complete();
-                        } else {
-                            subscriber.next(`Current transaction status: ` +
-                                `${result.status.type}`);
-                        }
-                    },
-                    error: error => {
-                        console.error(error);
-                        subscriber.error(`😞 Transaction Failed: ` +
-                            `${error.toString()}`)
-                    }
-                });
-        })
-
-        return observable;
+        return this.executeTransaction(
+            this._nodeState$.value.api.tx,
+            'balances',
+            'transfer',
+            [toAddress, amount],
+            TransactionType.Signed
+        );
     }
 }
